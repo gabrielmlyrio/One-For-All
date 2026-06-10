@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PicAtom</title>
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-picatom-16.png" id="appFavicon16">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-picatom-32.png" id="appFavicon32">
-  <link rel="apple-touch-icon" sizes="192x192" href="favicon-picatom-192.png" id="appAppleIcon">
+  <link rel="icon" type="image/png" sizes="16x16" href="imagens/favicon-picatom-16.png" id="appFavicon16">
+  <link rel="icon" type="image/png" sizes="32x32" href="imagens/favicon-picatom-32.png" id="appFavicon32">
+  <link rel="apple-touch-icon" sizes="192x192" href="imagens/favicon-picatom-192.png" id="appAppleIcon">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :root {
@@ -2496,7 +2496,7 @@
 <body>
   <div class="app">
     <header id="appHeader">
-      <img class="brand-logo" id="brandLogo" src="icon.png?v=8" alt="Ícone PicAtom">
+      <img class="brand-logo" id="brandLogo" src="imagens/icon.png?v=8" alt="Ícone PicAtom">
       <div class="brand-text">
         <h1 id="brandTitle">
           <span class="pic" id="brandPrefixPic">Pic</span><span class="des hidden" id="brandPrefixDes">Des</span><span class="red hidden" id="brandPrefixRed">Red</span><span class="at">At</span><span class="om">om</span>
@@ -7140,10 +7140,12 @@
       redatom: modeRedAtomBtn,
     };
 
+    const IMAGES_DIR = "imagens/";
+
     const MODE_LOGOS = {
-      picatom: { src: "icon.png", alt: "Ícone PicAtom" },
-      desatom: { src: "desatom-icon.png", alt: "Logo DesAtom" },
-      redatom: { src: "redatom-icon.png", alt: "Logo RedAtom" },
+      picatom: { src: `${IMAGES_DIR}icon.png`, alt: "Ícone PicAtom" },
+      desatom: { src: `${IMAGES_DIR}desatom-icon.png`, alt: "Logo DesAtom" },
+      redatom: { src: `${IMAGES_DIR}redatom-icon.png`, alt: "Logo RedAtom" },
     };
 
     const MODE_COPY = {
@@ -7177,9 +7179,9 @@
       };
       const prefix = prefixes[mode] || "favicon-picatom";
       const stamp = "?v=8";
-      appFavicon16.href = `${prefix}-16.png${stamp}`;
-      appFavicon32.href = `${prefix}-32.png${stamp}`;
-      appAppleIcon.href = `${prefix}-192.png${stamp}`;
+      appFavicon16.href = `${IMAGES_DIR}${prefix}-16.png${stamp}`;
+      appFavicon32.href = `${IMAGES_DIR}${prefix}-32.png${stamp}`;
+      appAppleIcon.href = `${IMAGES_DIR}${prefix}-192.png${stamp}`;
     }
 
     function resetDesatomCompareIfNeeded(targetMode) {
