@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Remove Fundo Trozoba</title>
+  <title>PicAtom</title>
   <link rel="icon" type="image/png" href="icon.png">
   <style>
     :root {
@@ -30,23 +30,34 @@
       padding: 0;
     }
 
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
       line-height: 1.5;
     }
 
     .app {
       max-width: 1500px;
+      height: 100vh;
       margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     header {
-      margin-bottom: 24px;
-      padding: 20px 22px;
+      width: 100%;
+      flex: 0 0 auto;
+      margin-bottom: 16px;
+      padding: 14px 18px;
       background: linear-gradient(135deg, #0a0a0a 0%, #121212 55%, #0d1f14 100%);
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -57,8 +68,8 @@
 
     .brand-logo {
       flex-shrink: 0;
-      width: 72px;
-      height: 72px;
+      width: 108px;
+      height: 108px;
       object-fit: contain;
       border-radius: 12px;
       filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
@@ -72,15 +83,15 @@
       line-height: 1.2;
     }
 
-    .brand-text h1 .remove {
+    .brand-text h1 .pic {
       color: var(--sea-light);
     }
 
-    .brand-text h1 .fundo {
+    .brand-text h1 .at {
       color: var(--gold-light);
     }
 
-    .brand-text h1 .trozoba {
+    .brand-text h1 .om {
       color: #ffffff;
       text-shadow: 0 0 18px rgba(46, 139, 87, 0.35);
     }
@@ -114,7 +125,18 @@
       grid-template-columns: 260px minmax(0, 1fr) 240px;
       gap: 16px;
       align-items: stretch;
-      min-height: calc(100vh - 200px);
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .layout > .panel {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .layout > aside.panel:not(.history-panel) {
+      overflow-y: auto;
     }
 
     @media (max-width: 1100px) {
@@ -283,9 +305,15 @@
     }
 
     .color-info {
+      flex: 1;
       font-size: 0.85rem;
       color: var(--muted);
       word-break: break-all;
+    }
+
+    .color-preview .tool-btn,
+    .brush-color-row .tool-btn {
+      flex-shrink: 0;
     }
 
     .mode-group {
@@ -425,13 +453,208 @@
       position: relative;
       flex: 1 1 auto;
       height: 0;
-      min-height: 480px;
+      min-height: 0;
       border-radius: 10px;
       overflow: hidden;
       border: 1px solid var(--border);
       background: var(--surface-2);
       display: flex;
       flex-direction: column;
+    }
+
+    .tools-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--border);
+      flex: 0 0 auto;
+      overflow: visible;
+      position: relative;
+      z-index: 10;
+    }
+
+    .tools-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .tools-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    button.tool-action-btn {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      max-width: 36px;
+      padding: 0;
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 0;
+      line-height: 0;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s, filter 0.15s;
+    }
+
+    button.tool-action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    button.tool-action-btn svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .tool-action-btn.primary {
+      background: linear-gradient(135deg, var(--sea) 0%, var(--gold) 100%);
+      border-color: transparent;
+      color: #0a0a0a;
+    }
+
+    .tool-action-btn.primary:hover:not(:disabled) {
+      background: var(--sea-light);
+    }
+
+    .tool-action-btn.secondary {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .tool-action-btn.secondary:hover:not(:disabled) {
+      border-color: var(--sea-light);
+    }
+
+    .tip-wrap .tool-action-btn:disabled {
+      pointer-events: none;
+    }
+
+    .remove-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .remove-dropdown {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .remove-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 210px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+      z-index: 99999;
+    }
+
+    .remove-dropdown-menu.hidden {
+      display: none;
+    }
+
+    .remove-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .remove-dropdown-item:hover {
+      background: var(--surface-2);
+    }
+
+    .remove-dropdown-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--sea-light);
+    }
+
+    .remove-dropdown-item span {
+      line-height: 1.2;
+    }
+
+    .tools-separator {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .tool-settings-section.hidden {
+      display: none;
+    }
+
+    .settings-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .tip-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      vertical-align: middle;
+    }
+
+    .tip-wrap .tool-btn:disabled,
+    .tip-wrap .tool-action-btn:disabled {
+      pointer-events: none;
+    }
+
+    .global-tooltip {
+      position: fixed;
+      z-index: 100000;
+      padding: 7px 12px;
+      background: #141414;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      line-height: 1.35;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+      transform: translate(-50%, calc(-100% - 10px));
+    }
+
+    .global-tooltip.hidden {
+      display: none;
     }
 
     .zoom-bar {
@@ -441,8 +664,13 @@
       gap: 8px;
       padding: 10px 12px;
       background: rgba(0, 0, 0, 0.35);
-      border-bottom: 1px solid var(--border);
       flex: 0 0 auto;
+    }
+
+    .zoom-bar-bottom {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-top: 10px;
     }
 
     .zoom-bar button {
@@ -481,6 +709,19 @@
       color: var(--muted);
       cursor: pointer;
       user-select: none;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+    }
+
+    .zoom-toggle:hover {
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .zoom-bg-inline svg {
+      flex-shrink: 0;
+      color: var(--muted);
     }
 
     .zoom-toggle input {
@@ -692,7 +933,8 @@
       flex-direction: column;
       gap: 8px;
       min-height: 120px;
-      max-height: calc(100vh - 340px);
+      max-height: none;
+      flex: 1 1 auto;
       padding-right: 4px;
       scrollbar-width: thin;
       scrollbar-color: var(--sea) var(--surface-2);
@@ -826,17 +1068,122 @@
       margin-top: 8px;
       min-height: 1em;
     }
+
+    button.tool-btn {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      max-width: 36px;
+      padding: 0;
+      margin: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      flex-shrink: 0;
+      cursor: pointer;
+      font-size: 0;
+      line-height: 0;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s, filter 0.15s;
+    }
+
+    button.tool-btn svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    button.tool-btn:hover:not(:disabled) {
+      border-color: var(--sea-light);
+      color: var(--text);
+    }
+
+    button.tool-btn.active {
+      background: linear-gradient(135deg, var(--sea) 0%, var(--gold) 100%);
+      border-color: transparent;
+      color: #0a0a0a;
+    }
+
+    button.tool-btn.active:hover:not(:disabled) {
+      filter: brightness(1.08);
+      border-color: transparent;
+      color: #0a0a0a;
+    }
+
+    button.tool-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .size-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .size-controls button {
+      min-width: 34px;
+      padding: 7px 10px;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .size-controls input[type="range"] {
+      flex: 1;
+    }
+
+    .brush-color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .brush-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #333;
+      flex-shrink: 0;
+    }
+
+    .brush-color-info {
+      flex: 1;
+      font-size: 0.78rem;
+      color: var(--muted);
+      min-width: 0;
+    }
+
+    .overlay-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .canvas-wrap.tool-brush canvas,
+    .canvas-wrap.tool-eraser canvas {
+      cursor: none;
+    }
+
+    .canvas-wrap.tool-lasso canvas {
+      cursor: crosshair;
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <img class="brand-logo" src="icon.png" alt="Ícone Remove Fundo Trozoba">
+      <img class="brand-logo" src="icon.png" alt="Ícone PicAtom">
       <div class="brand-text">
         <h1>
-          <span class="remove">Remove</span>
-          <span class="fundo">Fundo</span>
-          <span class="trozoba">Trozoba</span>
+          <span class="pic">Pic</span><span class="at">At</span><span class="om">om</span>
         </h1>
         <p class="subtitle">Carregue uma imagem, clique na cor do fundo e remova com tolerância ajustável.</p>
       </div>
@@ -850,7 +1197,7 @@
           <label>Imagem</label>
           <div class="file-picker">
             <input type="file" id="fileInput" class="file-input-hidden" accept="image/png,image/jpeg,image/webp,image/gif">
-            <label for="fileInput" class="file-picker-btn">
+            <label for="fileInput" class="file-picker-btn" data-tip="Carregar imagem PNG, JPEG, WebP ou GIF">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 16V4m0 0L8 8m4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -861,55 +1208,95 @@
           </div>
         </div>
 
-        <div class="control">
+        <div class="control tip-block color-pick-control" id="colorPickControl" data-tip="Cor clicada na imagem com o conta-gotas. Usada pelo botão Remover fundo. Clique aqui para voltar ao conta-gotas.">
           <label>Cor selecionada</label>
           <div class="color-preview">
             <div class="swatch" id="colorSwatch"></div>
             <div class="color-info" id="colorInfo">Clique na imagem para escolher</div>
+            <button type="button" class="tool-btn" id="bgColorPickerBtn" data-tip="Escolher a cor do fundo a remover" disabled>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 18l4-4m0 0 3 3m-3-3 3-3m-3 3-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
           </div>
         </div>
 
-        <div class="control">
+        <div class="control tip-block" data-tip="Quanto maior, mais tons parecidos serão removidos ao clicar em Remover fundo.">
           <div class="range-row">
-            <label for="tolerance">Tolerância</label>
+            <label for="tolerance">Tolerância (remover fundo)</label>
             <span class="range-value" id="toleranceValue">32</span>
           </div>
           <input type="range" id="tolerance" min="0" max="120" value="32">
         </div>
 
-        <div class="control">
-          <label>Modo de remoção</label>
-          <div class="mode-group">
-            <label class="mode-option">
-              <input type="radio" name="mode" value="edges" checked>
-              <div>
-                <strong>Só bordas</strong>
-                <span>Remove o fundo conectado às bordas da imagem (ideal para sprites).</span>
-              </div>
-            </label>
-            <label class="mode-option">
-              <input type="radio" name="mode" value="all">
-              <div>
-                <strong>Toda a imagem</strong>
-                <span>Remove qualquer pixel com a cor escolhida, inclusive no meio.</span>
-              </div>
-            </label>
+        <div class="control tip-block" data-tip="Usada pela varinha, borracha e laço. Independente da tolerância de remover fundo.">
+          <div class="range-row">
+            <label for="toolTolerance">Tolerância (ferramentas)</label>
+            <span class="range-value" id="toolToleranceValue">32</span>
+          </div>
+          <input type="range" id="toolTolerance" min="0" max="120" value="32">
+        </div>
+
+        <div class="control" id="toolSettingsPanel">
+          <label id="toolSettingsLabel">Opções da ferramenta</label>
+          <div class="tool-settings-section" id="settingsPicker">
+            <p class="settings-hint">Clique na imagem para escolher a cor do fundo a remover em massa.</p>
+          </div>
+          <div class="tool-settings-section hidden" id="settingsWand">
+            <p class="settings-hint">Usa a cor de «Cor selecionada». Clique na área para remover a região conectada.</p>
+          </div>
+          <div class="tool-settings-section hidden" id="settingsBrush">
+            <div class="range-row">
+              <label for="brushSize">Tamanho da borracha</label>
+              <span class="range-value" id="brushSizeValue">12</span>
+            </div>
+            <div class="size-controls">
+              <button type="button" class="btn-secondary" id="brushSizeDown" data-tip="Diminuir borracha">−</button>
+              <input type="range" id="brushSize" min="1" max="128" value="12">
+              <button type="button" class="btn-secondary" id="brushSizeUp" data-tip="Aumentar borracha">+</button>
+            </div>
+            <div class="brush-color-row" style="margin-top:10px">
+              <div class="brush-swatch" id="brushSwatch"></div>
+              <div class="brush-color-info" id="brushColorInfo">Sem cor</div>
+              <button type="button" class="tool-btn" id="brushPickerBtn" data-tip="Escolher a cor que a borracha vai remover">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 18l4-4m0 0 3 3m-3-3 3-3m-3 3-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <p class="settings-hint" style="margin-top:8px">Usa a mesma cor de «Cor selecionada». Arraste para remover ou clique na imagem para trocar a cor.</p>
+          </div>
+          <div class="tool-settings-section hidden" id="settingsEraser">
+            <div class="range-row">
+              <label for="eraserSize">Tamanho do restaurar</label>
+              <span class="range-value" id="eraserSizeValue">12</span>
+            </div>
+            <div class="size-controls">
+              <button type="button" class="btn-secondary" id="eraserSizeDown" data-tip="Diminuir restaurar">−</button>
+              <input type="range" id="eraserSize" min="1" max="128" value="12">
+              <button type="button" class="btn-secondary" id="eraserSizeUp" data-tip="Aumentar restaurar">+</button>
+            </div>
+          </div>
+          <div class="tool-settings-section hidden" id="settingsLasso">
+            <div class="range-row">
+              <label for="lassoExpand">Expansão do laço</label>
+              <span class="range-value" id="lassoExpandValue">0</span>
+            </div>
+            <div class="size-controls">
+              <button type="button" class="btn-secondary" id="lassoExpandDown" data-tip="Diminuir expansão">−</button>
+              <input type="range" id="lassoExpand" min="0" max="30" value="0">
+              <button type="button" class="btn-secondary" id="lassoExpandUp" data-tip="Aumentar expansão">+</button>
+            </div>
+            <p class="settings-hint" style="margin-top:8px">Usa a cor de «Cor selecionada». Desenhe o contorno e solte para remover.</p>
           </div>
         </div>
 
-        <div class="control">
+        <div class="control tip-block" data-tip="Intensidade da suavização ao clicar no ícone de suavizar no preview.">
           <div class="range-row">
             <label for="smoothStrength">Suavizar bordas</label>
             <span class="range-value" id="smoothStrengthValue">2</span>
           </div>
           <input type="range" id="smoothStrength" min="1" max="8" value="2">
-          <button class="btn-secondary" id="smoothBtn" disabled style="margin-top:10px;width:100%">Suavizar bordas</button>
         </div>
 
-        <div class="actions">
-          <button class="btn-primary" id="removeBtn" disabled>Remover fundo</button>
-          <button class="btn-secondary" id="resetBtn" disabled>Restaurar original</button>
-        </div>
+        <input type="radio" name="mode" value="edges" class="file-input-hidden" checked>
+        <input type="radio" name="mode" value="all" class="file-input-hidden">
 
         <p class="status" id="status"></p>
         <p class="cache-badge" id="cacheBadge"></p>
@@ -920,47 +1307,70 @@
           <h2>Preview</h2>
         </div>
         <div class="canvas-wrap bg-gray-black" id="canvasWrap">
-          <div class="zoom-bar" id="zoomBar">
-            <button type="button" class="btn-secondary" id="zoomOut" title="Diminuir zoom">−</button>
-            <input type="range" id="zoomSlider" min="25" max="6400" value="100" step="25">
-            <button type="button" class="btn-secondary" id="zoomIn" title="Aumentar zoom">+</button>
-            <span class="zoom-label" id="zoomLabel">100%</span>
-            <button type="button" class="btn-secondary zoom-btn-small" id="zoomFit">Ajustar</button>
-            <button type="button" class="btn-secondary zoom-btn-small" id="zoomPixel">1:1</button>
-            <button type="button" class="btn-secondary zoom-btn-small" id="zoomExtreme">Extremo</button>
-            <label class="zoom-toggle">
-              <input type="checkbox" id="pixelGrid" checked>
-              Grade
-            </label>
-            <label class="zoom-bg-inline">
-              Fundo
-              <select id="bgThemeSelect">
-                <optgroup label="Clássicos">
-                  <option value="gray-black">Cinza e preto</option>
-                  <option value="white-gray">Branco e cinza</option>
-                  <option value="white-black">Branco e preto</option>
-                  <option value="red-black">Vermelho e preto</option>
-                </optgroup>
-                <optgroup label="Cores">
-                  <option value="blue-black">Azul e preto</option>
-                  <option value="green-black">Verde e preto</option>
-                  <option value="gold-black">Dourado e preto</option>
-                  <option value="purple-black">Roxo e preto</option>
-                  <option value="orange-black">Laranja e preto</option>
-                  <option value="yellow-black">Amarelo e preto</option>
-                  <option value="magenta-black">Magenta e preto</option>
-                  <option value="pink-white">Rosa e branco</option>
-                  <option value="cyan-navy">Ciano e azul escuro</option>
-                  <option value="lime-black">Lima e preto</option>
-                  <option value="teal-black">Verde-água e preto</option>
-                </optgroup>
-                <optgroup label="Sólidos">
-                  <option value="solid-white">Branco sólido</option>
-                  <option value="solid-black">Preto sólido</option>
-                  <option value="solid-sea">Verde mar sólido</option>
-                </optgroup>
-              </select>
-            </label>
+          <div class="tools-bar" id="toolsBar">
+            <div class="tools-group">
+              <span class="tip-wrap" data-tip="Conta-gotas">
+                <button type="button" class="tool-btn active" data-tool="picker">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 18l4-4m0 0 3 3m-3-3 3-3m-3 3-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </span>
+              <span class="tip-wrap" data-tip="Varinha mágica">
+                <button type="button" class="tool-btn" data-tool="wand" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 6l1.2 2.4 2.4 1.2-2.4 1.2L12 13.2 10.8 10.8 8.4 9.6l2.4-1.2L12 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 18l8-8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </button>
+              </span>
+              <span class="tip-wrap" data-tip="Borracha">
+                <button type="button" class="tool-btn" data-tool="brush" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18c0 0 2.5-4 6.5-8S17 7 19 5s1 4-3 8-8 8-10 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </span>
+              <span class="tip-wrap" data-tip="Restaurar">
+                <button type="button" class="tool-btn" data-tool="eraser" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 16l7-7 3 3-7 7H8v-3z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M14 9l3 3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </button>
+              </span>
+              <span class="tip-wrap" data-tip="Laço">
+                <button type="button" class="tool-btn" data-tool="lasso" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 9c0-2.5 2-4 4.5-3.5 2 .5 3.5 2.5 3 5-3.5 3.5-6 2.5-3.5-2.5-3.5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 2"/></svg>
+                </button>
+              </span>
+            </div>
+            <div class="tools-bar-right">
+              <div class="remove-actions">
+                <div class="remove-dropdown" id="removeDropdown">
+                  <span class="tip-wrap" data-tip="Modo de remoção">
+                    <button type="button" class="tool-action-btn secondary" id="removeBtn" disabled aria-haspopup="true" aria-expanded="false">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.75"/><path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                    </button>
+                  </span>
+                  <div class="remove-dropdown-menu hidden" id="removeDropdownMenu" role="menu">
+                    <button type="button" class="remove-dropdown-item" data-mode="edges" data-tip="Só as bordas" role="menuitem">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.4" opacity="0.45"/></svg>
+                      <span>Só as bordas</span>
+                    </button>
+                    <button type="button" class="remove-dropdown-item" data-mode="all" data-tip="Toda a imagem" role="menuitem">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 8h8v8H8z" fill="currentColor" opacity="0.35"/></svg>
+                      <span>Toda a imagem</span>
+                    </button>
+                  </div>
+                </div>
+                <span class="tip-wrap" data-tip="Executar remoção">
+                  <button type="button" class="tool-action-btn primary" id="removeExecuteBtn" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 7v10l9-5-9-5z" fill="currentColor"/></svg>
+                  </button>
+                </span>
+              </div>
+              <span class="tip-wrap" data-tip="Suavizar bordas">
+                <button type="button" class="tool-action-btn secondary" id="smoothBtn" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13c2-3 4-4 7-4s5 1 7 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M7 17c2-1.5 4-2 5-2s3 .5 5 2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </button>
+              </span>
+              <span class="tip-wrap" data-tip="Restaurar original">
+                <button type="button" class="tool-action-btn secondary" id="resetBtn" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 7v3H4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10a8 8 0 1 1 2.5 5.7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </button>
+              </span>
+            </div>
           </div>
           <div class="zoom-viewport" id="zoomViewport">
             <span class="scroll-hint" id="scrollHint">Arraste as barras ou use Espaço + mouse para navegar</span>
@@ -971,17 +1381,60 @@
             <div class="zoom-stage" id="zoomStage">
               <div class="image-frame" id="imageFrame">
                 <canvas id="canvas" class="hidden"></canvas>
+                <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
                 <div class="pixel-grid-overlay" id="pixelGridOverlay"></div>
               </div>
             </div>
           </div>
           <div class="pixel-inspector" id="pixelInspector">Passe o mouse na imagem para inspecionar pixels</div>
         </div>
-        <div class="preview-actions">
-          <button class="btn-secondary" id="downloadBtn" disabled>Baixar</button>
-          <button class="btn-discord" id="discordBtn" disabled>Baixar para Discord</button>
+        <div class="zoom-bar zoom-bar-bottom" id="zoomBar">
+          <button type="button" class="btn-secondary" id="zoomOut" data-tip="Diminuir zoom">−</button>
+          <input type="range" id="zoomSlider" min="25" max="6400" value="100" step="25" data-tip="Ajustar nível de zoom da imagem">
+          <button type="button" class="btn-secondary" id="zoomIn" data-tip="Aumentar zoom">+</button>
+          <span class="zoom-label" id="zoomLabel" data-tip="Nível de zoom atual">100%</span>
+          <button type="button" class="btn-secondary zoom-btn-small" id="zoomFit" data-tip="Ajustar imagem para caber na tela">⊡</button>
+          <button type="button" class="btn-secondary zoom-btn-small" id="zoomPixel" data-tip="Zoom 1:1 — um pixel da imagem = um pixel na tela">1:1</button>
+          <button type="button" class="btn-secondary zoom-btn-small" id="zoomExtreme" data-tip="Zoom extremo para inspecionar detalhes">⚡</button>
+          <label class="zoom-toggle" data-tip="Mostrar grade de pixels no zoom alto">
+            <input type="checkbox" id="pixelGrid" checked>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z" stroke="currentColor" stroke-width="1.8"/></svg>
+          </label>
+          <label class="zoom-bg-inline" data-tip="Cor de fundo do preview (xadrez ou sólido)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16v16H4V4z" stroke="currentColor" stroke-width="1.8"/><path d="M4 12h16M12 4v16" stroke="currentColor" stroke-width="1.8"/></svg>
+            <select id="bgThemeSelect">
+              <optgroup label="Clássicos">
+                <option value="gray-black">Cinza e preto</option>
+                <option value="white-gray">Branco e cinza</option>
+                <option value="white-black">Branco e preto</option>
+                <option value="red-black">Vermelho e preto</option>
+              </optgroup>
+              <optgroup label="Cores">
+                <option value="blue-black">Azul e preto</option>
+                <option value="green-black">Verde e preto</option>
+                <option value="gold-black">Dourado e preto</option>
+                <option value="purple-black">Roxo e preto</option>
+                <option value="orange-black">Laranja e preto</option>
+                <option value="yellow-black">Amarelo e preto</option>
+                <option value="magenta-black">Magenta e preto</option>
+                <option value="pink-white">Rosa e branco</option>
+                <option value="cyan-navy">Ciano e azul escuro</option>
+                <option value="lime-black">Lima e preto</option>
+                <option value="teal-black">Verde-água e preto</option>
+              </optgroup>
+              <optgroup label="Sólidos">
+                <option value="solid-white">Branco sólido</option>
+                <option value="solid-black">Preto sólido</option>
+                <option value="solid-sea">Verde mar sólido</option>
+              </optgroup>
+            </select>
+          </label>
         </div>
-        <p class="hint">Dica: <kbd>conta-gotas</kbd> na imagem · <kbd>scroll</kbd> zoom no cursor · <kbd>Espaço</kbd>+arrastar ou botão direito para mover · use <strong>Extremo</strong> e <strong>Grade</strong> para achar falhas.</p>
+        <div class="preview-actions">
+          <button class="btn-secondary" id="downloadBtn" disabled data-tip="Baixar imagem editada como PNG">Baixar</button>
+          <button class="btn-discord" id="discordBtn" disabled data-tip="Enviar imagem para o Discord">Baixar para Discord</button>
+        </div>
+        <p class="hint">Dica: ferramentas <kbd>I</kbd> gota · <kbd>W</kbd> varinha · <kbd>B</kbd> borracha · <kbd>E</kbd> restaurar · <kbd>L</kbd> laço · <kbd>[</kbd><kbd>]</kbd> tamanho · <kbd>scroll</kbd> zoom · <kbd>Espaço</kbd>+arrastar para mover.</p>
       </main>
 
       <aside class="panel history-panel" id="historyPanel">
@@ -990,7 +1443,7 @@
           <p class="history-empty" id="historyEmpty">Nenhuma remoção ainda</p>
         </div>
         <div class="history-actions">
-          <button class="btn-secondary" id="clearHistoryBtn" disabled style="width:100%">Limpar histórico</button>
+          <button class="btn-secondary" id="clearHistoryBtn" disabled style="width:100%" data-tip="Apaga todas as etapas do histórico (a imagem não muda)">Limpar histórico</button>
         </div>
       </aside>
     </div>
@@ -1001,6 +1454,8 @@
     <button type="button" data-action="remove-step" class="danger">Remover esta etapa</button>
   </div>
 
+  <div id="globalTooltip" class="global-tooltip hidden" role="tooltip"></div>
+
   <iframe id="discordFrame" name="discordFrame" title="Discord" hidden></iframe>
 
   <script>
@@ -1008,11 +1463,19 @@
     const fileNameDisplay = document.getElementById("fileNameDisplay");
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const overlayCanvas = document.getElementById("overlayCanvas");
+    const overlayCtx = overlayCanvas.getContext("2d");
     const colorSwatch = document.getElementById("colorSwatch");
     const colorInfo = document.getElementById("colorInfo");
+    const bgColorPickerBtn = document.getElementById("bgColorPickerBtn");
+    const colorPickControl = document.getElementById("colorPickControl");
     const toleranceInput = document.getElementById("tolerance");
     const toleranceValue = document.getElementById("toleranceValue");
+    const toolToleranceInput = document.getElementById("toolTolerance");
+    const toolToleranceValue = document.getElementById("toolToleranceValue");
     const removeBtn = document.getElementById("removeBtn");
+    const removeExecuteBtn = document.getElementById("removeExecuteBtn");
+    const removeDropdownMenu = document.getElementById("removeDropdownMenu");
     const resetBtn = document.getElementById("resetBtn");
     const downloadBtn = document.getElementById("downloadBtn");
     const discordBtn = document.getElementById("discordBtn");
@@ -1037,6 +1500,30 @@
     const smoothStrengthValue = document.getElementById("smoothStrengthValue");
     const smoothBtn = document.getElementById("smoothBtn");
     const cacheBadge = document.getElementById("cacheBadge");
+    const toolButtons = document.querySelectorAll(".tool-btn[data-tool]");
+    const settingsPicker = document.getElementById("settingsPicker");
+    const settingsWand = document.getElementById("settingsWand");
+    const settingsBrush = document.getElementById("settingsBrush");
+    const settingsEraser = document.getElementById("settingsEraser");
+    const settingsLasso = document.getElementById("settingsLasso");
+    const brushSizeInput = document.getElementById("brushSize");
+    const brushSizeValue = document.getElementById("brushSizeValue");
+    const eraserSizeInput = document.getElementById("eraserSize");
+    const eraserSizeValue = document.getElementById("eraserSizeValue");
+    const lassoExpandInput = document.getElementById("lassoExpand");
+    const lassoExpandValue = document.getElementById("lassoExpandValue");
+    const brushSwatch = document.getElementById("brushSwatch");
+    const brushColorInfo = document.getElementById("brushColorInfo");
+    const brushPickerBtn = document.getElementById("brushPickerBtn");
+
+    const TOOL_LABELS = {
+      auto: "Remover fundo",
+      wand: "Varinha",
+      brush: "Borracha",
+      eraser: "Restaurar",
+      lasso: "Laço",
+      smooth: "Suavizar"
+    };
 
     const CACHE_DB_NAME = "remove-fundo-cache";
     const CACHE_STORE = "workspace";
@@ -1044,7 +1531,7 @@
 
     // Cole aqui a URL do webhook do Discord
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1513926296311304273/4XbpqY13HaK78fYV7z7kQqTcm9S9x0sCd45vS1gRuzy3TdF129H0kMr43hLMgDbI29DR";
-    const DISCORD_MESSAGE = "Imagem enviada pelo Remove Fundo Trozoba";
+    const DISCORD_MESSAGE = "Imagem enviada pelo PicAtom";
     const PREVIEW_THEMES = [
       "gray-black", "white-gray", "white-black", "red-black",
       "blue-black", "green-black", "gold-black", "purple-black",
@@ -1070,21 +1557,190 @@
     let ctxHistoryId = null;
     let saveTimer = null;
     let loadedFileName = "";
-
+    let activeTool = "picker";
+    let brushPicking = false;
+    let isToolDrawing = false;
+    let strokeMask = null;
+    let strokeAction = "remove";
+    let lassoPoints = [];
+    let lastBrushX = -1;
+    let lastBrushY = -1;
     function setStatus(message, isError = false) {
       statusEl.textContent = message;
       statusEl.classList.toggle("error", isError);
     }
 
+    function getToolTolerance() {
+      return Number(toolToleranceInput.value);
+    }
+
     function updateButtons() {
       const hasImage = !!originalImageData;
       const canRemove = hasImage && selectedColor !== null;
-      removeBtn.disabled = !canRemove;
+      removeBtn.disabled = !hasImage;
+      removeExecuteBtn.disabled = !canRemove;
+      bgColorPickerBtn.disabled = !hasImage;
       resetBtn.disabled = !hasImage;
       downloadBtn.disabled = !hasImage;
       discordBtn.disabled = !hasImage;
       smoothBtn.disabled = !hasImage;
       clearHistoryBtn.disabled = removalHistory.length === 0;
+      toolButtons.forEach((btn) => {
+        if (btn.dataset.tool === "picker") {
+          btn.disabled = !hasImage;
+        } else {
+          btn.disabled = !hasImage;
+        }
+      });
+    }
+
+    function setActiveTool(tool) {
+      if (!originalImageData && tool !== "picker") return;
+      activeTool = tool;
+      brushPicking = false;
+      brushPickerBtn.classList.remove("active");
+      bgColorPickerBtn.classList.toggle("active", tool === "picker");
+      toolButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tool === tool);
+      });
+      canvasWrap.classList.remove("tool-brush", "tool-eraser", "tool-lasso");
+      if (tool === "brush") canvasWrap.classList.add("tool-brush");
+      if (tool === "eraser") canvasWrap.classList.add("tool-eraser");
+      if (tool === "lasso") canvasWrap.classList.add("tool-lasso");
+
+      settingsPicker.classList.toggle("hidden", tool !== "picker");
+      settingsWand.classList.toggle("hidden", tool !== "wand");
+      settingsBrush.classList.toggle("hidden", tool !== "brush");
+      settingsEraser.classList.toggle("hidden", tool !== "eraser");
+      settingsLasso.classList.toggle("hidden", tool !== "lasso");
+
+      updateColorUI();
+      setToolStatus(tool);
+
+      clearOverlay();
+      scheduleSave();
+    }
+
+    function setSelectedColor(color) {
+      selectedColor = color
+        ? { r: color.r, g: color.g, b: color.b, a: color.a ?? 255 }
+        : null;
+      updateColorUI();
+      updateButtons();
+    }
+
+    function updateColorUI() {
+      if (!selectedColor) {
+        colorSwatch.style.background = "#333";
+        colorInfo.textContent = "Clique na imagem para escolher";
+        brushSwatch.style.background = "#333";
+        brushColorInfo.textContent = "Sem cor";
+        return;
+      }
+      const css = `rgba(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b}, ${selectedColor.a / 255})`;
+      const label = `RGB(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b})`;
+      colorSwatch.style.background = css;
+      colorInfo.textContent = label;
+      brushSwatch.style.background = css;
+      brushColorInfo.textContent = label;
+    }
+
+    function getRemovalTargetColor(pixelColor) {
+      return selectedColor || pixelColor;
+    }
+
+    function setToolStatus(tool) {
+      if (!originalImageData) return;
+      if (selectedColor) {
+        if (tool === "picker") {
+          setStatus("Cor selecionada. Escolha o modo e clique em Executar remoção.");
+        } else if (tool === "brush") {
+          setStatus("Cor selecionada. Arraste com a borracha para remover pixels dessa cor.");
+        } else if (tool === "wand") {
+          setStatus("Cor selecionada. Clique na área para remover com a varinha.");
+        } else if (tool === "lasso") {
+          setStatus("Cor selecionada. Desenhe o laço para remover pixels dessa cor.");
+        } else if (tool === "eraser") {
+          setStatus("Arraste para restaurar pixels do original.");
+        }
+        return;
+      }
+      if (tool === "picker") {
+        setStatus("Clique na imagem para escolher a cor do fundo.");
+      } else if (tool === "brush") {
+        setStatus("Clique na imagem para escolher a cor ou use o conta-gotas da borracha.");
+      } else if (tool === "wand") {
+        setStatus("Clique em um pixel para remover a região conectada.");
+      } else if (tool === "lasso") {
+        setStatus("Desenhe o contorno na imagem e solte para remover.");
+      } else if (tool === "eraser") {
+        setStatus("Arraste para restaurar pixels do original.");
+      }
+    }
+
+    function syncOverlayCanvas() {
+      if (!currentImageData) return;
+      const scale = zoomLevel / 100;
+      const displayW = Math.round(canvas.width * scale);
+      const displayH = Math.round(canvas.height * scale);
+      overlayCanvas.width = displayW;
+      overlayCanvas.height = displayH;
+      overlayCanvas.style.width = `${displayW}px`;
+      overlayCanvas.style.height = `${displayH}px`;
+    }
+
+    function clearOverlay() {
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      lassoPoints = [];
+    }
+
+    function drawBrushPreview(event) {
+      if (!currentImageData || (activeTool !== "brush" && activeTool !== "eraser")) {
+        clearOverlay();
+        return;
+      }
+
+      syncOverlayCanvas();
+      const coords = getCanvasPixelCoords(event);
+      if (!coords) {
+        clearOverlay();
+        return;
+      }
+
+      const size = activeTool === "brush" ? Number(brushSizeInput.value) : Number(eraserSizeInput.value);
+      const scale = zoomLevel / 100;
+      const radius = (size * scale) / 2;
+      const rect = canvas.getBoundingClientRect();
+      const cx = (coords.x + 0.5) * scale;
+      const cy = (coords.y + 0.5) * scale;
+
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      overlayCtx.beginPath();
+      overlayCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+      overlayCtx.strokeStyle = activeTool === "brush" ? "rgba(212, 175, 55, 0.9)" : "rgba(231, 76, 60, 0.9)";
+      overlayCtx.lineWidth = 1.5;
+      overlayCtx.stroke();
+      overlayCtx.fillStyle = activeTool === "brush" ? "rgba(212, 175, 55, 0.15)" : "rgba(231, 76, 60, 0.15)";
+      overlayCtx.fill();
+    }
+
+    function drawLassoOverlay() {
+      if (!lassoPoints.length) return;
+      syncOverlayCanvas();
+      const scale = zoomLevel / 100;
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      overlayCtx.beginPath();
+      lassoPoints.forEach((point, index) => {
+        const x = point.x * scale;
+        const y = point.y * scale;
+        if (index === 0) overlayCtx.moveTo(x, y);
+        else overlayCtx.lineTo(x, y);
+      });
+      overlayCtx.strokeStyle = "rgba(60, 179, 113, 0.95)";
+      overlayCtx.lineWidth = 2;
+      overlayCtx.setLineDash([6, 4]);
+      overlayCtx.stroke();
+      overlayCtx.setLineDash([]);
     }
 
     function openCacheDb() {
@@ -1164,20 +1820,28 @@
           defaultBaseName,
           selectedColor,
           tolerance: Number(toleranceInput.value),
+          toolTolerance: Number(toolToleranceInput.value),
           mode: document.querySelector('input[name="mode"]:checked')?.value || "edges",
           bgTheme: bgThemeSelect.value,
           zoomLevel,
           smoothStrength: Number(smoothStrengthInput.value),
+          activeTool,
+          brushSize: Number(brushSizeInput.value),
+          eraserSize: Number(eraserSizeInput.value),
+          lassoExpand: Number(lassoExpandInput.value),
+          brushColor: selectedColor,
           originalPng: await imageDataToPng(originalImageData),
           currentPng: await imageDataToPng(currentImageData),
           history: removalHistory.map((entry) => ({
             id: entry.id,
             timestamp: entry.timestamp,
+            tool: entry.tool,
+            actionType: entry.actionType,
             color: entry.color,
             tolerance: entry.tolerance,
             mode: entry.mode,
             pixelsRemoved: entry.pixelsRemoved,
-            removedMask: Array.from(entry.removedMask),
+            changedMask: Array.from(entry.changedMask),
             thumbnail: entry.thumbnail
           }))
         };
@@ -1215,6 +1879,8 @@
         selectedColor = payload.selectedColor || null;
         toleranceInput.value = String(payload.tolerance ?? 32);
         toleranceValue.textContent = toleranceInput.value;
+        toolToleranceInput.value = String(payload.toolTolerance ?? payload.tolerance ?? 32);
+        toolToleranceValue.textContent = toolToleranceInput.value;
         smoothStrengthInput.value = String(payload.smoothStrength ?? 2);
         smoothStrengthValue.textContent = smoothStrengthInput.value;
 
@@ -1230,13 +1896,26 @@
 
         removalHistory = (payload.history || []).map((entry) => ({
           ...entry,
-          removedMask: new Uint8Array(entry.removedMask)
+          changedMask: new Uint8Array(entry.changedMask || entry.removedMask || [])
         }));
 
-        if (selectedColor) {
-          colorSwatch.style.background = `rgba(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b}, ${(selectedColor.a ?? 255) / 255})`;
-          colorInfo.textContent = `RGB(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b})`;
+        if (payload.brushSize) {
+          brushSizeInput.value = String(payload.brushSize);
+          brushSizeValue.textContent = brushSizeInput.value;
         }
+        if (payload.eraserSize) {
+          eraserSizeInput.value = String(payload.eraserSize);
+          eraserSizeValue.textContent = eraserSizeInput.value;
+        }
+        if (payload.lassoExpand !== undefined) {
+          lassoExpandInput.value = String(payload.lassoExpand);
+          lassoExpandValue.textContent = lassoExpandInput.value;
+        }
+        if (!selectedColor && payload.brushColor) {
+          selectedColor = payload.brushColor;
+        }
+        updateColorUI();
+        if (payload.activeTool) setActiveTool(payload.activeTool);
 
         setFileName(loadedFileName);
         drawImageData(currentImageData);
@@ -1253,11 +1932,23 @@
 
     function rebuildImageFromHistory(upToIndex = null, excludeId = null) {
       const data = new Uint8ClampedArray(originalImageData.data);
+      const orig = originalImageData.data;
       removalHistory.forEach((entry, index) => {
         if (excludeId && entry.id === excludeId) return;
         if (upToIndex !== null && index > upToIndex) return;
-        for (let i = 0; i < entry.removedMask.length; i++) {
-          if (entry.removedMask[i]) data[i * 4 + 3] = 0;
+        const mask = entry.changedMask || entry.removedMask;
+        if (!mask) return;
+        for (let i = 0; i < mask.length; i++) {
+          if (!mask[i]) continue;
+          const p = i * 4;
+          if (entry.actionType === "restore") {
+            data[p] = orig[p];
+            data[p + 1] = orig[p + 1];
+            data[p + 2] = orig[p + 2];
+            data[p + 3] = orig[p + 3];
+          } else {
+            data[p + 3] = 0;
+          }
         }
       });
       return new ImageData(data, originalImageData.width, originalImageData.height);
@@ -1275,15 +1966,21 @@
         const item = document.createElement("div");
         item.className = "history-item";
         item.dataset.id = entry.id;
-        const alpha = (entry.color.a ?? 255) / 255;
-        const swatchBg = `rgba(${entry.color.r}, ${entry.color.g}, ${entry.color.b}, ${alpha})`;
+        const toolLabel = TOOL_LABELS[entry.tool] || "Remoção";
+        const alpha = (entry.color?.a ?? 255) / 255;
+        const swatchBg = entry.color
+          ? `rgba(${entry.color.r}, ${entry.color.g}, ${entry.color.b}, ${alpha})`
+          : "#666";
+        const colorText = entry.color
+          ? `RGB(${entry.color.r}, ${entry.color.g}, ${entry.color.b}) · tol. ${entry.tolerance}`
+          : entry.actionType === "restore" ? "Pixels restaurados" : "Sem cor";
         item.innerHTML =
-          `<img class="history-thumb" src="${entry.thumbnail}" alt="Remoção ${index + 1}">` +
+          `<img class="history-thumb" src="${entry.thumbnail}" alt="${toolLabel} ${index + 1}">` +
           `<div class="history-meta">` +
-          `<strong>Remoção #${index + 1}</strong>` +
+          `<strong>${toolLabel} #${index + 1}</strong>` +
           `<span class="history-color-row">` +
-          `<span class="history-color-swatch" style="background:${swatchBg}" title="Cor removida"></span>` +
-          `RGB(${entry.color.r}, ${entry.color.g}, ${entry.color.b}) · tol. ${entry.tolerance}` +
+          `<span class="history-color-swatch" style="background:${swatchBg}" title="Cor"></span>` +
+          `${colorText}` +
           `</span>` +
           `<span>${entry.pixelsRemoved.toLocaleString("pt-BR")} px · ${formatHistoryTime(entry.timestamp)}</span>` +
           `</div>`;
@@ -1294,19 +1991,363 @@
       updateButtons();
     }
 
-    function addHistoryEntry({ stepMask, color, tolerance, mode, pixelsRemoved }) {
+    function addHistoryEntry({ stepMask, color, tolerance, mode, pixelsRemoved, tool = "auto", actionType = "remove" }) {
       const entry = {
         id: crypto.randomUUID(),
         timestamp: Date.now(),
-        color: { ...color },
-        tolerance,
-        mode,
+        tool,
+        actionType,
+        color: color ? { ...color } : null,
+        tolerance: tolerance ?? getToolTolerance(),
+        mode: mode ?? document.querySelector('input[name="mode"]:checked')?.value,
         pixelsRemoved,
-        removedMask: stepMask,
+        changedMask: stepMask,
         thumbnail: createThumbnail(currentImageData)
       };
       removalHistory.push(entry);
       renderHistory();
+      scheduleSave();
+    }
+
+    function countMaskPixels(mask) {
+      let count = 0;
+      for (let i = 0; i < mask.length; i++) {
+        if (mask[i]) count++;
+      }
+      return count;
+    }
+
+    function floodFillMask(startX, startY, data, width, height, seedColor, tolerance) {
+      const mask = new Uint8Array(width * height);
+      const visited = new Uint8Array(width * height);
+      const queue = [[startX, startY]];
+      const startIdx = startY * width + startX;
+
+      if (!matchesColor(
+        data[startIdx * 4], data[startIdx * 4 + 1], data[startIdx * 4 + 2], data[startIdx * 4 + 3],
+        seedColor, tolerance
+      )) {
+        return mask;
+      }
+
+      while (queue.length > 0) {
+        const [x, y] = queue.pop();
+        const idx = y * width + x;
+        if (visited[idx]) continue;
+        visited[idx] = 1;
+
+        const i = idx * 4;
+        if (!matchesColor(data[i], data[i + 1], data[i + 2], data[i + 3], seedColor, tolerance)) {
+          continue;
+        }
+
+        mask[idx] = 1;
+        if (x > 0) queue.push([x - 1, y]);
+        if (x < width - 1) queue.push([x + 1, y]);
+        if (y > 0) queue.push([x, y - 1]);
+        if (y < height - 1) queue.push([x, y + 1]);
+      }
+
+      return mask;
+    }
+
+    function applyMaskRemoval(mask) {
+      if (!currentImageData) return 0;
+      const { width, height, data } = currentImageData;
+      const out = new Uint8ClampedArray(data);
+      let count = 0;
+      for (let i = 0; i < mask.length; i++) {
+        if (!mask[i] || out[i * 4 + 3] === 0) continue;
+        out[i * 4 + 3] = 0;
+        count++;
+      }
+      if (count > 0) {
+        currentImageData = new ImageData(out, width, height);
+        drawImageData(currentImageData);
+      }
+      return count;
+    }
+
+    function applyMagicWand(x, y) {
+      const tolerance = getToolTolerance();
+      const { width, height, data } = currentImageData;
+      const idx = (y * width + x) * 4;
+      const pixelColor = {
+        r: data[idx],
+        g: data[idx + 1],
+        b: data[idx + 2],
+        a: data[idx + 3]
+      };
+      const seedColor = getRemovalTargetColor(pixelColor);
+      if (!selectedColor && pixelColor.a < 10) {
+        setStatus("Clique em um pixel visível para usar a varinha.", true);
+        return;
+      }
+      if (selectedColor && !matchesColor(pixelColor.r, pixelColor.g, pixelColor.b, pixelColor.a, seedColor, tolerance)) {
+        setStatus("Clique em um pixel da cor selecionada ou escolha outra cor com o conta-gotas.", true);
+        return;
+      }
+      const mask = floodFillMask(x, y, data, width, height, seedColor, tolerance);
+      const count = applyMaskRemoval(mask);
+      if (count > 0) {
+        addHistoryEntry({
+          stepMask: mask,
+          color: seedColor,
+          tolerance,
+          pixelsRemoved: count,
+          tool: "wand"
+        });
+        setStatus(`Varinha: ${count.toLocaleString("pt-BR")} pixels removidos.`);
+      } else {
+        setStatus("Nenhum pixel removido com a varinha.");
+      }
+    }
+
+    function forEachBrushPixel(x, y, size, callback) {
+      const radius = size / 2;
+      const r2 = radius * radius;
+      const minX = Math.max(0, Math.floor(x - radius));
+      const maxX = Math.min(canvas.width - 1, Math.ceil(x + radius));
+      const minY = Math.max(0, Math.floor(y - radius));
+      const maxY = Math.min(canvas.height - 1, Math.ceil(y + radius));
+
+      for (let py = minY; py <= maxY; py++) {
+        for (let px = minX; px <= maxX; px++) {
+          const dx = px + 0.5 - x;
+          const dy = py + 0.5 - y;
+          if (dx * dx + dy * dy <= r2) callback(px, py);
+        }
+      }
+    }
+
+    function interpolateBrushStroke(x0, y0, x1, y1, size, callback) {
+      const dx = x1 - x0;
+      const dy = y1 - y0;
+      const dist = Math.hypot(dx, dy);
+      const steps = Math.max(1, Math.ceil(dist / Math.max(1, size * 0.35)));
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        callback(x0 + dx * t, y0 + dy * t);
+      }
+    }
+
+    function paintBrushAt(x, y, size) {
+      if (!selectedColor) return;
+      const tolerance = getToolTolerance();
+      const data = currentImageData.data;
+      const width = currentImageData.width;
+      forEachBrushPixel(x, y, size, (px, py) => {
+        const idx = py * width + px;
+        if (strokeMask[idx]) return;
+        const i = idx * 4;
+        if (data[i + 3] === 0) return;
+        if (!matchesColor(data[i], data[i + 1], data[i + 2], data[i + 3], selectedColor, tolerance)) return;
+        data[i + 3] = 0;
+        strokeMask[idx] = 1;
+      });
+    }
+
+    function paintEraserAt(x, y, size) {
+      const data = currentImageData.data;
+      const orig = originalImageData.data;
+      const width = currentImageData.width;
+      forEachBrushPixel(x, y, size, (px, py) => {
+        const idx = py * width + px;
+        if (strokeMask[idx]) return;
+        const i = idx * 4;
+        if (data[i + 3] === orig[i + 3] &&
+            data[i] === orig[i] &&
+            data[i + 1] === orig[i + 1] &&
+            data[i + 2] === orig[i + 2]) return;
+        data[i] = orig[i];
+        data[i + 1] = orig[i + 1];
+        data[i + 2] = orig[i + 2];
+        data[i + 3] = orig[i + 3];
+        strokeMask[idx] = 1;
+      });
+    }
+
+    function commitStroke() {
+      if (!strokeMask) return;
+      const count = countMaskPixels(strokeMask);
+      if (count === 0) {
+        strokeMask = null;
+        if (strokeAction === "remove") {
+          setStatus("Nenhum pixel removido. Aumente a tolerância ou escolha outra cor no conta-gotas da borracha.", true);
+        }
+        return;
+      }
+
+      const maskCopy = new Uint8Array(strokeMask);
+      if (strokeAction === "remove") {
+        addHistoryEntry({
+          stepMask: maskCopy,
+          color: selectedColor,
+          tolerance: getToolTolerance(),
+          pixelsRemoved: count,
+          tool: "brush"
+        });
+        setStatus(`Borracha: ${count.toLocaleString("pt-BR")} pixels removidos.`);
+      } else {
+        addHistoryEntry({
+          stepMask: maskCopy,
+          color: null,
+          pixelsRemoved: count,
+          tool: "eraser",
+          actionType: "restore"
+        });
+        setStatus(`Restaurar: ${count.toLocaleString("pt-BR")} pixels restaurados.`);
+      }
+      strokeMask = null;
+      scheduleSave();
+    }
+
+    function pointInPolygon(x, y, points) {
+      let inside = false;
+      for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+        const xi = points[i].x;
+        const yi = points[i].y;
+        const xj = points[j].x;
+        const yj = points[j].y;
+        const intersect = ((yi > y) !== (yj > y)) &&
+          (x < ((xj - xi) * (y - yi)) / (yj - yi + 0.00001) + xi);
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    }
+
+    function buildPolygonMask(points, width, height) {
+      const mask = new Uint8Array(width * height);
+      if (points.length < 3) return mask;
+      let minX = width;
+      let minY = height;
+      let maxX = 0;
+      let maxY = 0;
+      points.forEach((p) => {
+        minX = Math.min(minX, p.x);
+        minY = Math.min(minY, p.y);
+        maxX = Math.max(maxX, p.x);
+        maxY = Math.max(maxY, p.y);
+      });
+      minX = Math.max(0, Math.floor(minX));
+      minY = Math.max(0, Math.floor(minY));
+      maxX = Math.min(width - 1, Math.ceil(maxX));
+      maxY = Math.min(height - 1, Math.ceil(maxY));
+
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          if (pointInPolygon(x + 0.5, y + 0.5, points)) {
+            mask[y * width + x] = 1;
+          }
+        }
+      }
+      return mask;
+    }
+
+    function expandMask(mask, width, height, amount) {
+      if (amount <= 0) return mask;
+      let current = mask;
+      const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+      for (let pass = 0; pass < amount; pass++) {
+        const expanded = new Uint8Array(current);
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            if (!current[y * width + x]) continue;
+            for (const [dx, dy] of dirs) {
+              const nx = x + dx;
+              const ny = y + dy;
+              if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                expanded[ny * width + nx] = 1;
+              }
+            }
+          }
+        }
+        current = expanded;
+      }
+      return current;
+    }
+
+    function applyLassoSelection(points) {
+      if (points.length < 3) {
+        setStatus("Laço muito pequeno. Desenhe uma área maior.", true);
+        return;
+      }
+
+      const tolerance = getToolTolerance();
+      const { width, height, data } = currentImageData;
+      let regionMask = buildPolygonMask(points, width, height);
+      const expand = Number(lassoExpandInput.value);
+      if (expand > 0) regionMask = expandMask(regionMask, width, height, expand);
+
+      const seed = points[0];
+      const seedIdx = (seed.y * width + seed.x) * 4;
+      const pixelColor = {
+        r: data[seedIdx],
+        g: data[seedIdx + 1],
+        b: data[seedIdx + 2],
+        a: data[seedIdx + 3]
+      };
+      const targetColor = getRemovalTargetColor(pixelColor);
+
+      const removeMask = new Uint8Array(width * height);
+      let count = 0;
+      for (let i = 0; i < regionMask.length; i++) {
+        if (!regionMask[i]) continue;
+        const p = i * 4;
+        if (data[p + 3] === 0) continue;
+        if (!matchesColor(data[p], data[p + 1], data[p + 2], data[p + 3], targetColor, tolerance)) continue;
+        removeMask[i] = 1;
+      }
+
+      const removed = applyMaskRemoval(removeMask);
+      if (removed > 0) {
+        addHistoryEntry({
+          stepMask: removeMask,
+          color: targetColor,
+          tolerance,
+          pixelsRemoved: removed,
+          tool: "lasso"
+        });
+        setStatus(`Laço: ${removed.toLocaleString("pt-BR")} pixels removidos.`);
+      } else {
+        setStatus("Nenhum pixel removido dentro do laço.", true);
+      }
+      clearOverlay();
+    }
+
+    function sampleBrushColorAt(x, y) {
+      if (!currentImageData) return false;
+      const index = (y * canvas.width + x) * 4;
+      const data = currentImageData.data;
+      if (data[index + 3] < 10) return false;
+      setSelectedColor({
+        r: data[index],
+        g: data[index + 1],
+        b: data[index + 2],
+        a: data[index + 3]
+      });
+      return true;
+    }
+
+    function ensureBrushColor(coords) {
+      if (selectedColor) return true;
+      if (coords && sampleBrushColorAt(coords.x, coords.y)) return true;
+      return false;
+    }
+
+    function pickBrushColor(event) {
+      const coords = getCanvasPixelCoords(event);
+      if (!coords) {
+        setStatus("Clique em um pixel visível da imagem.", true);
+        return;
+      }
+      if (!sampleBrushColorAt(coords.x, coords.y)) {
+        setStatus("Clique em um pixel visível para definir a cor da borracha.", true);
+        return;
+      }
+      brushPicking = false;
+      brushPickerBtn.classList.remove("active");
+      setStatus("Cor selecionada. Arraste com a borracha para remover pixels dessa cor.");
       scheduleSave();
     }
 
@@ -1388,6 +2429,8 @@
       dropHint.style.display = "none";
       zoomStage.classList.add("has-image");
       setZoom(zoomLevel, { keepPosition: true });
+      syncOverlayCanvas();
+      clearOverlay();
     }
 
     function setZoom(value, { keepPosition = true, anchor = null } = {}) {
@@ -1550,11 +2593,10 @@
             originalImageData.height
           );
 
-          selectedColor = null;
-          colorSwatch.style.background = "#333";
-          colorInfo.textContent = "Clique na imagem para escolher";
+          setSelectedColor(null);
           removalHistory = [];
           renderHistory();
+          setActiveTool("picker");
 
           defaultBaseName = file.name.replace(/\.[^.]+$/, "") + "-sem-fundo";
 
@@ -1580,24 +2622,118 @@
       const index = (y * canvas.width + x) * 4;
       const data = currentImageData.data;
 
-      selectedColor = {
+      setSelectedColor({
         r: data[index],
         g: data[index + 1],
         b: data[index + 2],
         a: data[index + 3]
-      };
-
-      colorSwatch.style.background = `rgba(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b}, ${selectedColor.a / 255})`;
-      colorInfo.textContent = `RGB(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b})`;
-      updateButtons();
-      setStatus("Cor selecionada. Ajuste a tolerância e clique em Remover fundo.");
+      });
+      setToolStatus(activeTool);
+      scheduleSave();
     }
 
-    function removeBackground() {
+    function handleCanvasPointerDown(event) {
+      if (!currentImageData || event.button !== 0 || panMoved) return;
+      const coords = getCanvasPixelCoords(event);
+      if (!coords) return;
+
+      const pickedBrushColorNow = brushPicking;
+      if (brushPicking) {
+        pickBrushColor(event);
+        if (!selectedColor || activeTool !== "brush") return;
+      }
+
+      if (activeTool === "picker") return;
+      if (activeTool === "wand") {
+        applyMagicWand(coords.x, coords.y);
+        return;
+      }
+
+      isToolDrawing = true;
+      if (activeTool === "brush") {
+        if (!ensureBrushColor(coords)) {
+          setStatus("Clique na cor que deseja remover ou use o conta-gotas da borracha.", true);
+          isToolDrawing = false;
+          return;
+        }
+        if (pickedBrushColorNow) scheduleSave();
+        strokeAction = "remove";
+        strokeMask = new Uint8Array(canvas.width * canvas.height);
+        paintBrushAt(coords.x + 0.5, coords.y + 0.5, Number(brushSizeInput.value));
+        ctx.putImageData(currentImageData, 0, 0);
+        lastBrushX = coords.x;
+        lastBrushY = coords.y;
+      } else if (activeTool === "eraser") {
+        strokeAction = "restore";
+        strokeMask = new Uint8Array(canvas.width * canvas.height);
+        paintEraserAt(coords.x + 0.5, coords.y + 0.5, Number(eraserSizeInput.value));
+        ctx.putImageData(currentImageData, 0, 0);
+        lastBrushX = coords.x;
+        lastBrushY = coords.y;
+      } else if (activeTool === "lasso") {
+        lassoPoints = [coords];
+        drawLassoOverlay();
+      }
+    }
+
+    function handleCanvasPointerMove(event) {
+      drawBrushPreview(event);
+      if (!isToolDrawing || !currentImageData) return;
+      const coords = getCanvasPixelCoords(event);
+      if (!coords) return;
+
+      if (activeTool === "brush") {
+        interpolateBrushStroke(
+          lastBrushX + 0.5, lastBrushY + 0.5,
+          coords.x + 0.5, coords.y + 0.5,
+          Number(brushSizeInput.value),
+          (px, py) => paintBrushAt(px, py, Number(brushSizeInput.value))
+        );
+        ctx.putImageData(currentImageData, 0, 0);
+        lastBrushX = coords.x;
+        lastBrushY = coords.y;
+      } else if (activeTool === "eraser") {
+        interpolateBrushStroke(
+          lastBrushX + 0.5, lastBrushY + 0.5,
+          coords.x + 0.5, coords.y + 0.5,
+          Number(eraserSizeInput.value),
+          (px, py) => paintEraserAt(px, py, Number(eraserSizeInput.value))
+        );
+        ctx.putImageData(currentImageData, 0, 0);
+        lastBrushX = coords.x;
+        lastBrushY = coords.y;
+      } else if (activeTool === "lasso") {
+        const last = lassoPoints[lassoPoints.length - 1];
+        if (!last || Math.hypot(coords.x - last.x, coords.y - last.y) >= 1) {
+          lassoPoints.push(coords);
+          drawLassoOverlay();
+        }
+      }
+    }
+
+    function handleCanvasPointerUp() {
+      if (!isToolDrawing) return;
+
+      if (activeTool === "brush" || activeTool === "eraser") {
+        isToolDrawing = false;
+        commitStroke();
+        lastBrushX = -1;
+        lastBrushY = -1;
+        return;
+      }
+
+      if (activeTool === "lasso") {
+        isToolDrawing = false;
+        applyLassoSelection(lassoPoints);
+        lassoPoints = [];
+      }
+    }
+
+    function removeBackground(forcedMode) {
       if (!currentImageData || !selectedColor) return;
 
       const tolerance = Number(toleranceInput.value);
-      const mode = document.querySelector('input[name="mode"]:checked').value;
+      const mode = forcedMode || document.querySelector('input[name="mode"]:checked').value;
       const width = currentImageData.width;
       const height = currentImageData.height;
       const data = new Uint8ClampedArray(currentImageData.data);
@@ -1669,7 +2805,8 @@
           color: selectedColor,
           tolerance,
           mode,
-          pixelsRemoved: removedCount
+          pixelsRemoved: removedCount,
+          tool: "auto"
         });
       }
 
@@ -1884,6 +3021,7 @@
       if (!currentImageData) return;
       const usePan = event.button === 1 || event.button === 2 || spacePressed;
       if (!usePan) return;
+      if (isToolDrawing) return;
 
       event.preventDefault();
       isPanning = true;
@@ -1910,9 +3048,25 @@
       setTimeout(() => { panMoved = false; }, 0);
     }
 
-    canvas.addEventListener("click", pickColor);
-    canvas.addEventListener("mousemove", inspectPixel);
+    canvas.addEventListener("click", (event) => {
+      if (activeTool === "picker") pickColor(event);
+    });
+    canvas.addEventListener("mousedown", handleCanvasPointerDown);
+    canvas.addEventListener("mousemove", (event) => {
+      inspectPixel(event);
+      handleCanvasPointerMove(event);
+    });
+    window.addEventListener("mousemove", (event) => {
+      if (isToolDrawing) handleCanvasPointerMove(event);
+    });
+    canvas.addEventListener("mouseup", handleCanvasPointerUp);
+    window.addEventListener("mouseup", handleCanvasPointerUp);
     canvas.addEventListener("mouseleave", () => {
+      if (isToolDrawing && (activeTool === "brush" || activeTool === "eraser")) {
+        isToolDrawing = false;
+        commitStroke();
+      }
+      clearOverlay();
       pixelInspector.textContent = "Passe o mouse na imagem para inspecionar pixels";
       pixelInspector.classList.remove("active");
     });
@@ -1925,6 +3079,47 @@
     });
 
     window.addEventListener("keydown", (event) => {
+      if (event.target.matches("input, textarea, select")) return;
+
+      const key = event.key.toLowerCase();
+      if (key === "i") setActiveTool("picker");
+      if (key === "w" && originalImageData) setActiveTool("wand");
+      if (key === "b" && originalImageData) setActiveTool("brush");
+      if (key === "e" && originalImageData) setActiveTool("eraser");
+      if (key === "l" && originalImageData) setActiveTool("lasso");
+
+      if (key === "[" || key === "-") {
+        if (activeTool === "brush") {
+          brushSizeInput.value = String(Math.max(1, Number(brushSizeInput.value) - 2));
+          brushSizeValue.textContent = brushSizeInput.value;
+          scheduleSave();
+        } else if (activeTool === "eraser") {
+          eraserSizeInput.value = String(Math.max(1, Number(eraserSizeInput.value) - 2));
+          eraserSizeValue.textContent = eraserSizeInput.value;
+          scheduleSave();
+        } else if (activeTool === "lasso") {
+          lassoExpandInput.value = String(Math.max(0, Number(lassoExpandInput.value) - 1));
+          lassoExpandValue.textContent = lassoExpandInput.value;
+          scheduleSave();
+        }
+      }
+
+      if (key === "]" || key === "+") {
+        if (activeTool === "brush") {
+          brushSizeInput.value = String(Math.min(128, Number(brushSizeInput.value) + 2));
+          brushSizeValue.textContent = brushSizeInput.value;
+          scheduleSave();
+        } else if (activeTool === "eraser") {
+          eraserSizeInput.value = String(Math.min(128, Number(eraserSizeInput.value) + 2));
+          eraserSizeValue.textContent = eraserSizeInput.value;
+          scheduleSave();
+        } else if (activeTool === "lasso") {
+          lassoExpandInput.value = String(Math.min(30, Number(lassoExpandInput.value) + 1));
+          lassoExpandValue.textContent = lassoExpandInput.value;
+          scheduleSave();
+        }
+      }
+
       if (event.code === "Space" && !event.repeat) {
         spacePressed = true;
         zoomViewport.classList.add("is-panning");
@@ -1971,11 +3166,62 @@
       toleranceValue.textContent = toleranceInput.value;
       scheduleSave();
     });
+    toolToleranceInput.addEventListener("input", () => {
+      toolToleranceValue.textContent = toolToleranceInput.value;
+      scheduleSave();
+    });
     smoothStrengthInput.addEventListener("input", () => {
       smoothStrengthValue.textContent = smoothStrengthInput.value;
       scheduleSave();
     });
-    removeBtn.addEventListener("click", removeBackground);
+    function closeRemoveDropdown() {
+      removeDropdownMenu.classList.add("hidden");
+      removeBtn.setAttribute("aria-expanded", "false");
+    }
+
+    function toggleRemoveDropdown() {
+      if (removeBtn.disabled) return;
+      const isOpen = !removeDropdownMenu.classList.contains("hidden");
+      if (isOpen) {
+        closeRemoveDropdown();
+      } else {
+        removeDropdownMenu.classList.remove("hidden");
+        removeBtn.setAttribute("aria-expanded", "true");
+      }
+    }
+
+    function focusRemoveBackgroundFlow() {
+      if (!originalImageData) return;
+      setActiveTool("picker");
+    }
+
+    removeBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      focusRemoveBackgroundFlow();
+      toggleRemoveDropdown();
+    });
+
+    removeDropdownMenu.querySelectorAll(".remove-dropdown-item").forEach((item) => {
+      item.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const mode = item.dataset.mode;
+        const modeInput = document.querySelector(`input[name="mode"][value="${mode}"]`);
+        if (modeInput) modeInput.checked = true;
+        closeRemoveDropdown();
+        focusRemoveBackgroundFlow();
+        scheduleSave();
+
+        const modeLabel = mode === "edges" ? "Só as bordas" : "Toda a imagem";
+        setStatus(`Modo "${modeLabel}" selecionado. Clique em Executar remoção.`);
+      });
+    });
+
+    removeExecuteBtn.addEventListener("click", () => {
+      focusRemoveBackgroundFlow();
+      removeBackground();
+    });
+
+    document.addEventListener("click", closeRemoveDropdown);
     resetBtn.addEventListener("click", resetImage);
     smoothBtn.addEventListener("click", smoothEdges);
     downloadBtn.addEventListener("click", downloadImage);
@@ -1989,6 +3235,67 @@
     document.querySelectorAll('input[name="mode"]').forEach((input) => {
       input.addEventListener("change", scheduleSave);
     });
+
+    toolButtons.forEach((btn) => {
+      btn.addEventListener("click", () => setActiveTool(btn.dataset.tool));
+    });
+
+    brushPickerBtn.addEventListener("click", () => {
+      brushPicking = !brushPicking;
+      brushPickerBtn.classList.toggle("active", brushPicking);
+      setStatus(brushPicking ? "Clique na imagem para definir a cor da borracha." : "Seleção de cor da borracha cancelada.");
+    });
+
+    bgColorPickerBtn.addEventListener("click", () => focusRemoveBackgroundFlow());
+    colorPickControl.addEventListener("click", (event) => {
+      if (event.target.closest("button")) return;
+      focusRemoveBackgroundFlow();
+    });
+
+    function bindSizeControl(downBtn, upBtn, input, label, min, max, step = 1) {
+      downBtn.addEventListener("click", () => {
+        input.value = String(Math.max(min, Number(input.value) - step));
+        label.textContent = input.value;
+        scheduleSave();
+      });
+      upBtn.addEventListener("click", () => {
+        input.value = String(Math.min(max, Number(input.value) + step));
+        label.textContent = input.value;
+        scheduleSave();
+      });
+      input.addEventListener("input", () => {
+        label.textContent = input.value;
+        scheduleSave();
+      });
+    }
+
+    bindSizeControl(
+      document.getElementById("brushSizeDown"),
+      document.getElementById("brushSizeUp"),
+      brushSizeInput,
+      brushSizeValue,
+      1,
+      128,
+      2
+    );
+    bindSizeControl(
+      document.getElementById("eraserSizeDown"),
+      document.getElementById("eraserSizeUp"),
+      eraserSizeInput,
+      eraserSizeValue,
+      1,
+      128,
+      2
+    );
+    bindSizeControl(
+      document.getElementById("lassoExpandDown"),
+      document.getElementById("lassoExpandUp"),
+      lassoExpandInput,
+      lassoExpandValue,
+      0,
+      30,
+      1
+    );
 
     historyCtxMenu.addEventListener("click", (event) => {
       const action = event.target.closest("button")?.dataset.action;
@@ -2016,7 +3323,61 @@
       if (file) loadFile(file);
     });
 
+    const globalTooltip = document.getElementById("globalTooltip");
+    let tooltipTarget = null;
+
+    function positionGlobalTooltip(event) {
+      if (!tooltipTarget || globalTooltip.classList.contains("hidden")) return;
+
+      const margin = 10;
+      globalTooltip.style.left = `${event.clientX}px`;
+      globalTooltip.style.top = `${event.clientY}px`;
+      globalTooltip.style.transform = `translate(-50%, calc(-100% - ${margin}px))`;
+
+      let rect = globalTooltip.getBoundingClientRect();
+      let dx = 0;
+
+      if (rect.left < 8) dx = 8 - rect.left;
+      else if (rect.right > window.innerWidth - 8) dx = window.innerWidth - 8 - rect.right;
+
+      if (rect.top < 8) {
+        globalTooltip.style.transform = `translate(-50%, ${margin}px)`;
+        rect = globalTooltip.getBoundingClientRect();
+        if (rect.left < 8) dx = 8 - rect.left;
+        else if (rect.right > window.innerWidth - 8) dx = window.innerWidth - 8 - rect.right;
+      }
+
+      if (dx) {
+        globalTooltip.style.transform += ` translateX(${dx}px)`;
+      }
+    }
+
+    function showGlobalTooltip(event) {
+      const el = event.currentTarget;
+      const text = el.dataset.tip;
+      if (!text) return;
+      tooltipTarget = el;
+      globalTooltip.textContent = text;
+      globalTooltip.classList.remove("hidden");
+      positionGlobalTooltip(event);
+    }
+
+    function hideGlobalTooltip() {
+      tooltipTarget = null;
+      globalTooltip.classList.add("hidden");
+    }
+
+    document.querySelectorAll("[data-tip]").forEach((el) => {
+      el.addEventListener("mouseenter", showGlobalTooltip);
+      el.addEventListener("mousemove", positionGlobalTooltip);
+      el.addEventListener("mouseleave", hideGlobalTooltip);
+      el.addEventListener("focus", showGlobalTooltip);
+      el.addEventListener("blur", hideGlobalTooltip);
+    });
+
     updateButtons();
+    updateColorUI();
+    setActiveTool("picker");
     loadFromCache();
   </script>
 </body>
