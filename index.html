@@ -108,6 +108,14 @@
       opacity: 1;
     }
 
+    header.tonatom-mode {
+      background: linear-gradient(135deg, #0a0a0a 0%, #121212 55%, #0d1f28 100%);
+    }
+
+    header.movatom-mode {
+      background: linear-gradient(135deg, #0a0a0a 0%, #121212 55%, #1a1410 100%);
+    }
+
     header > * {
       position: relative;
       z-index: 1;
@@ -165,8 +173,20 @@
       opacity: 0;
     }
 
+    .mode-indicator-bg-tonatom {
+      background: linear-gradient(135deg, #038bbb 0%, var(--gold) 100%);
+      opacity: 0;
+    }
+
+    .mode-indicator-bg-movatom {
+      background: linear-gradient(135deg, #FE9A3E 0%, var(--gold) 100%);
+      opacity: 0;
+    }
+
     .header-modes[data-active="desatom"] .mode-indicator-bg-picatom,
-    .header-modes[data-active="redatom"] .mode-indicator-bg-picatom {
+    .header-modes[data-active="redatom"] .mode-indicator-bg-picatom,
+    .header-modes[data-active="tonatom"] .mode-indicator-bg-picatom,
+    .header-modes[data-active="movatom"] .mode-indicator-bg-picatom {
       opacity: 0;
     }
 
@@ -178,23 +198,43 @@
       opacity: 1;
     }
 
+    .header-modes[data-active="tonatom"] .mode-indicator-bg-tonatom {
+      opacity: 1;
+    }
+
+    .header-modes[data-active="movatom"] .mode-indicator-bg-movatom {
+      opacity: 1;
+    }
+
     .header-modes[data-active="picatom"] .mode-indicator-bg-desatom,
     .header-modes[data-active="picatom"] .mode-indicator-bg-redatom,
+    .header-modes[data-active="picatom"] .mode-indicator-bg-tonatom,
+    .header-modes[data-active="picatom"] .mode-indicator-bg-movatom,
     .header-modes[data-active="desatom"] .mode-indicator-bg-redatom,
-    .header-modes[data-active="redatom"] .mode-indicator-bg-desatom {
+    .header-modes[data-active="desatom"] .mode-indicator-bg-tonatom,
+    .header-modes[data-active="desatom"] .mode-indicator-bg-movatom,
+    .header-modes[data-active="redatom"] .mode-indicator-bg-desatom,
+    .header-modes[data-active="redatom"] .mode-indicator-bg-tonatom,
+    .header-modes[data-active="redatom"] .mode-indicator-bg-movatom,
+    .header-modes[data-active="tonatom"] .mode-indicator-bg-desatom,
+    .header-modes[data-active="tonatom"] .mode-indicator-bg-redatom,
+    .header-modes[data-active="tonatom"] .mode-indicator-bg-movatom,
+    .header-modes[data-active="movatom"] .mode-indicator-bg-desatom,
+    .header-modes[data-active="movatom"] .mode-indicator-bg-redatom,
+    .header-modes[data-active="movatom"] .mode-indicator-bg-tonatom {
       opacity: 0;
     }
 
     .mode-btn {
       position: relative;
       z-index: 1;
-      padding: 10px 14px;
+      padding: 10px 9px;
       border-radius: 9px;
       background: transparent;
       color: var(--muted);
       border: none;
       outline: none;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
       letter-spacing: -0.01em;
       white-space: nowrap;
@@ -221,6 +261,7 @@
     .mode-btn .mode-pic,
     .mode-btn .mode-des,
     .mode-btn .mode-red,
+    .mode-btn .mode-ton,
     .mode-btn .mode-at,
     .mode-btn .mode-om {
       transition: color 0.17s linear, opacity 0.17s linear;
@@ -228,7 +269,9 @@
 
     .mode-btn .mode-pic,
     .mode-btn .mode-des,
-    .mode-btn .mode-red {
+    .mode-btn .mode-red,
+    .mode-btn .mode-ton,
+    .mode-btn .mode-mov {
       color: inherit;
     }
 
@@ -244,6 +287,8 @@
     .mode-btn.active .mode-pic,
     .mode-btn.active .mode-des,
     .mode-btn.active .mode-red,
+    .mode-btn.active .mode-ton,
+    .mode-btn.active .mode-mov,
     .mode-btn.active .mode-at,
     .mode-btn.active .mode-om {
       color: #0a0a0a;
@@ -260,6 +305,14 @@
 
     .mode-btn:not(.active) .mode-red {
       color: #ff8a80;
+    }
+
+    .mode-btn:not(.active) .mode-ton {
+      color: #038bbb;
+    }
+
+    .mode-btn:not(.active) .mode-mov {
+      color: #FE9A3E;
     }
 
     .mode-btn:not(.active) .mode-at {
@@ -393,8 +446,550 @@
 
     .desatom-only.hidden,
     .picatom-only.hidden,
-    .redatom-only.hidden {
+    .redatom-only.hidden,
+    .tonatom-only.hidden {
       display: none !important;
+    }
+
+    .workspace.tonatom-mode,
+    .workspace.movatom-mode {
+      grid-template-columns: var(--layout-side-width) minmax(0, 1fr);
+    }
+
+    .workspace.tonatom-mode > .shared-preview,
+    .workspace.tonatom-mode > .workspace-col-right,
+    .workspace.movatom-mode > .shared-preview,
+    .workspace.movatom-mode > .workspace-col-right,
+    .workspace.movatom-mode > .tonatom-preview {
+      display: none !important;
+    }
+
+    .tonatom-preview,
+    .movatom-preview {
+      display: none;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      gap: 12px;
+    }
+
+    .tonatom-preview {
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .movatom-preview {
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    .workspace.tonatom-mode > .tonatom-preview {
+      display: grid;
+    }
+
+    .workspace.movatom-mode > .movatom-preview {
+      display: grid;
+    }
+
+    .tonatom-preview-top,
+    .movatom-preview-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tonatom-preview-top h2 {
+      margin-bottom: 0;
+    }
+
+    .tonatom-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      min-height: 0;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    @media (max-width: 900px) {
+      .tonatom-preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tonatom-preview-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .tonatom-preview-card-header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tonatom-canvas-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 180px;
+      background:
+        linear-gradient(45deg, var(--checker-b) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--checker-b) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--checker-b) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--checker-b) 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-color: var(--checker-a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      cursor: crosshair;
+    }
+
+    .tonatom-canvas-wrap.is-idle {
+      cursor: default;
+    }
+
+    .tonatom-canvas-wrap canvas {
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: auto;
+    }
+
+    .tonatom-drop-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 16px;
+      pointer-events: none;
+    }
+
+    .tonatom-drop-hint strong {
+      color: var(--text);
+    }
+
+    .tonatom-batch-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .tonatom-batch-list {
+      flex: 0 1 140px;
+      max-height: 140px;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tonatom-batch-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text);
+      text-align: left;
+      width: 100%;
+    }
+
+    .tonatom-batch-item:hover {
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tonatom-batch-item.active {
+      border-color: #038bbb;
+      background: rgba(3, 139, 187, 0.12);
+    }
+
+    .tonatom-batch-item .material-icons {
+      font-size: 18px;
+      color: #038bbb;
+      flex-shrink: 0;
+    }
+
+    .tonatom-batch-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tonatom-batch-empty {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: center;
+      padding: 24px 12px;
+    }
+
+    .tonatom-compare-toggle {
+      display: flex;
+      gap: 4px;
+      padding: 2px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .tonatom-compare-btn {
+      padding: 4px 10px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tonatom-compare-btn.active {
+      background: #038bbb;
+      color: #ffffff;
+    }
+
+    .tonatom-preview-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .tonatom-hint {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .tonatom-status {
+      font-size: 0.88rem;
+      margin-top: 8px;
+      min-height: 1.2em;
+    }
+
+    .tonatom-status.ok {
+      color: #81c784;
+    }
+
+    .tonatom-status.error {
+      color: var(--danger);
+    }
+
+    .tonatom-preview-body {
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+      min-height: 0;
+      flex: 1 1 auto;
+      overflow: hidden;
+    }
+
+    .tonatom-stepper {
+      flex: 0 0 52px;
+      width: 52px;
+      padding: 6px 0;
+      align-self: center;
+    }
+
+    .tonatom-steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tonatom-step {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 0 0 18px;
+      width: 100%;
+    }
+
+    .tonatom-step:last-child {
+      padding-bottom: 0;
+    }
+
+    .tonatom-step::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 34px;
+      bottom: 0;
+      width: 5px;
+      transform: translateX(-50%);
+      border-radius: 3px;
+      background: linear-gradient(
+        to bottom,
+        var(--tonatom-line-from, #d8d8d8),
+        var(--tonatom-line-to, #d8d8d8)
+      );
+      z-index: 0;
+    }
+
+    .tonatom-step:last-child::before {
+      display: none;
+    }
+
+    .tonatom-step-dot {
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      background: #d8d8d8;
+      color: #444;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+      transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    }
+
+    .tonatom-step.is-active .tonatom-step-dot {
+      transform: scale(1.08);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12), 0 3px 12px rgba(0, 0, 0, 0.28);
+    }
+
+    .tonatom-step-label {
+      position: relative;
+      z-index: 1;
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      line-height: 1.15;
+      text-align: center;
+      max-width: 52px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tonatom-step.is-active .tonatom-step-label,
+    .tonatom-step.is-done .tonatom-step-label {
+      color: var(--text);
+    }
+
+    .tonatom-step.is-complete-all .tonatom-step-label {
+      color: #81c784;
+    }
+
+    .tonatom-stepper.is-workflow-complete .tonatom-step-dot {
+      background: #43A047 !important;
+      color: #fff !important;
+    }
+
+    #tonatomView [data-tonatom-step].tonatom-step-locked {
+      opacity: 0.38;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #tonatomView [data-tonatom-step].tonatom-step-locked .file-picker-btn {
+      cursor: not-allowed;
+    }
+
+    #tonatomView .color-info {
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      min-width: 0;
+    }
+
+    #tonatomView .color-preview {
+      min-width: 0;
+    }
+
+    .tonatom-meta-list {
+      display: grid;
+      gap: 6px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .tonatom-meta-list strong {
+      color: var(--text);
+    }
+
+    .tonatom-color-map {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tonatom-color-map-arrow {
+      color: #038bbb;
+      font-weight: 700;
+    }
+
+    .tonatom-detected-colors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tonatom-detected-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .tonatom-detected-chip .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+    }
+
+    #tonatomView input[type="range"] {
+      accent-color: #038bbb;
+    }
+
+    #tonatomView .btn-primary {
+      background: linear-gradient(135deg, #038bbb 0%, #027aa3 100%);
+      border-color: #038bbb;
+      color: #ffffff;
+    }
+
+    #tonatomView .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #04a3d9 0%, #038bbb 100%);
+    }
+
+    .brand-text h1 .ton {
+      color: #038bbb;
+    }
+
+    header.tonatom-mode .brand-text h1 .om {
+      text-shadow: 0 0 18px rgba(3, 139, 187, 0.35);
+    }
+
+    .tutorial-section-badge.tonatom {
+      background: rgba(3, 139, 187, 0.18);
+      color: #6ec8e8;
+      border-color: rgba(3, 139, 187, 0.4);
+    }
+
+    .tutorial-section-badge.movatom {
+      background: rgba(254, 154, 62, 0.18);
+      color: #FE9A3E;
+      border-color: rgba(254, 154, 62, 0.45);
+    }
+
+    #movatomView input[type="range"] {
+      accent-color: #FE9A3E;
+    }
+
+    #movatomView select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    #movatomView .btn-primary {
+      background: linear-gradient(135deg, #FE9A3E 0%, #E07D1A 100%);
+      border-color: #FE9A3E;
+      color: #1a1a1a;
+    }
+
+    #movatomView .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #FFB366 0%, #FE9A3E 100%);
+    }
+
+    .brand-text h1 .mov {
+      color: #FE9A3E;
+    }
+
+    header.movatom-mode .brand-text h1 .om {
+      text-shadow: 0 0 18px rgba(254, 154, 62, 0.35);
+    }
+
+    .movatom-preview {
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    .movatom-frame-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px;
+    }
+
+    .movatom-frame-bar input[type="range"] {
+      flex: 1 1 auto;
+      accent-color: #FE9A3E;
+    }
+
+    .movatom-frame-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .movatom-status {
+      font-size: 0.88rem;
+      margin-top: 8px;
+      min-height: 1.2em;
+    }
+
+    .movatom-status.ok { color: #81c784; }
+    .movatom-status.error { color: var(--danger); }
+
+    .movatom-compare-btn.active {
+      background: #FE9A3E;
+      color: #1a1a1a;
     }
 
     .desatom-hint {
@@ -2511,7 +3106,7 @@
       <img class="brand-logo" id="brandLogo" src="imagens/icon.png?v=8" alt="Ícone PicAtom">
       <div class="brand-text">
         <h1 id="brandTitle">
-          <span class="pic" id="brandPrefixPic">Pic</span><span class="des hidden" id="brandPrefixDes">Des</span><span class="red hidden" id="brandPrefixRed">Red</span><span class="at">At</span><span class="om">om</span>
+          <span class="pic" id="brandPrefixPic">Pic</span><span class="des hidden" id="brandPrefixDes">Des</span><span class="red hidden" id="brandPrefixRed">Red</span><span class="ton hidden" id="brandPrefixTon">Ton</span><span class="mov hidden" id="brandPrefixMov">Mov</span><span class="at">At</span><span class="om">om</span>
         </h1>
         <p class="subtitle" id="brandSubtitle">Carregue uma imagem, clique na cor do fundo e remova com tolerância ajustável.</p>
       </div>
@@ -2520,6 +3115,8 @@
           <span class="mode-indicator-bg mode-indicator-bg-picatom"></span>
           <span class="mode-indicator-bg mode-indicator-bg-desatom"></span>
           <span class="mode-indicator-bg mode-indicator-bg-redatom"></span>
+          <span class="mode-indicator-bg mode-indicator-bg-tonatom"></span>
+          <span class="mode-indicator-bg mode-indicator-bg-movatom"></span>
         </span>
         <button type="button" class="mode-btn active" id="modePicAtomBtn" data-mode="picatom" role="tab" aria-selected="true">
           <span class="mode-pic">Pic</span><span class="mode-at">At</span><span class="mode-om">om</span>
@@ -2530,8 +3127,14 @@
         <button type="button" class="mode-btn" id="modeRedAtomBtn" data-mode="redatom" role="tab" aria-selected="false">
           <span class="mode-red">Red</span><span class="mode-at">At</span><span class="mode-om">om</span>
         </button>
+        <button type="button" class="mode-btn" id="modeTonAtomBtn" data-mode="tonatom" role="tab" aria-selected="false">
+          <span class="mode-ton">Ton</span><span class="mode-at">At</span><span class="mode-om">om</span>
+        </button>
+        <button type="button" class="mode-btn" id="modeMovAtomBtn" data-mode="movatom" role="tab" aria-selected="false">
+          <span class="mode-mov">Mov</span><span class="mode-at">At</span><span class="mode-om">om</span>
+        </button>
       </div>
-      <button type="button" class="btn-secondary tutorial-help-btn" id="tutorialHelpBtn" title="Ver tutorial — PicAtom, DesAtom e RedAtom">Tutorial</button>
+      <button type="button" class="btn-secondary tutorial-help-btn" id="tutorialHelpBtn" title="Ver tutorial">Tutorial</button>
     </header>
 
     <div class="workspace" id="workspace">
@@ -2920,7 +3523,230 @@
         </div>
       </aside>
     </div>
+
+    <div class="app-view" id="tonatomView">
+      <aside class="panel">
+        <h2>Controles</h2>
+
+        <div class="control" data-tonatom-step="1">
+          <label>Referência</label>
+          <div class="file-picker">
+            <input type="file" id="tonatomRefInput" class="file-input-hidden" accept="image/png,image/jpeg,image/webp,image/gif">
+            <label for="tonatomRefInput" class="file-picker-btn" id="tonatomRefLabel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 16V4m0 0L8 8m4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Escolher imagem
+            </label>
+            <span class="file-picker-name" id="tonatomRefName">Nenhuma</span>
+          </div>
+        </div>
+
+        <div class="control" data-tonatom-step="2">
+          <label>Cor de origem</label>
+          <div class="color-preview">
+            <div class="swatch" id="tonatomOrigemSwatch"></div>
+            <div class="color-info" id="tonatomOrigemInfo">Clique na referência</div>
+            <button type="button" class="tool-btn" id="tonatomOrigemPickerBtn" disabled title="Conta-gotas na referência">
+              <span class="material-icons tool-icon" aria-hidden="true">colorize</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="control" data-tonatom-step="3">
+          <label>Lote</label>
+          <div class="file-picker">
+            <input type="file" id="tonatomBatchInput" class="file-input-hidden" accept="image/png,image/jpeg,image/webp,image/gif" multiple webkitdirectory>
+            <input type="file" id="tonatomBatchFilesInput" class="file-input-hidden" accept="image/png,image/jpeg,image/webp,image/gif" multiple>
+            <label for="tonatomBatchInput" class="file-picker-btn" id="tonatomBatchFolderLabel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+              Pasta
+            </label>
+            <label for="tonatomBatchFilesInput" class="file-picker-btn" id="tonatomBatchFilesLabel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 16l4-4 4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Arquivos
+            </label>
+            <span class="file-picker-name" id="tonatomBatchName">Nenhuma</span>
+          </div>
+        </div>
+
+        <div class="control" data-tonatom-step="4">
+          <label>Cor alvo</label>
+          <div class="color-preview">
+            <div class="swatch" id="tonatomAlvoSwatch"></div>
+            <div class="color-info" id="tonatomAlvoInfo">Clique no lote</div>
+            <button type="button" class="tool-btn" id="tonatomAlvoPickerBtn" disabled title="Conta-gotas no lote">
+              <span class="material-icons tool-icon" aria-hidden="true">colorize</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="control" data-tonatom-step="4" data-tonatom-step-max="5">
+          <div class="range-row">
+            <label for="tonatomTolerance">Alcance</label>
+            <span class="range-value" id="tonatomToleranceValue">40</span>
+          </div>
+          <input type="range" id="tonatomTolerance" min="1" max="120" value="40">
+        </div>
+
+        <div class="control" data-tonatom-step="5">
+          <button type="button" class="btn-primary" id="tonatomProcessBtn" disabled style="width:100%">Salvar lote</button>
+          <p class="tonatom-status" id="tonatomStatus"></p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="app-view" id="movatomView">
+      <aside class="panel">
+        <h2>Controles</h2>
+
+        <div class="control">
+          <label>Vídeo</label>
+          <div class="file-picker">
+            <input type="file" id="movatomVideoInput" class="file-input-hidden" accept="video/*">
+            <label for="movatomVideoInput" class="file-picker-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 6h12l4 4v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 6v4h4" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Escolher vídeo
+            </label>
+            <span class="file-picker-name" id="movatomVideoName">Nenhum</span>
+          </div>
+        </div>
+
+        <div class="control">
+          <label>Cor do fundo</label>
+          <div class="color-preview">
+            <div class="swatch" id="movatomBgSwatch"></div>
+            <div class="color-info" id="movatomBgInfo">Clique no frame</div>
+            <button type="button" class="tool-btn" id="movatomBgPickerBtn" disabled title="Conta-gotas">
+              <span class="material-icons tool-icon" aria-hidden="true">colorize</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="control">
+          <label>Novo fundo</label>
+          <input type="color" class="paint-color-input" id="movatomNewBgInput" value="#ffffff" style="width:100%;height:40px;border-radius:8px;border:1px solid var(--border);padding:4px;background:var(--surface-2)">
+        </div>
+
+        <div class="control">
+          <div class="range-row">
+            <label for="movatomTolerance">Tolerância</label>
+            <span class="range-value" id="movatomToleranceValue">32</span>
+          </div>
+          <input type="range" id="movatomTolerance" min="0" max="120" value="32">
+        </div>
+
+        <div class="control">
+          <label for="movatomRemoveMode">Remoção</label>
+          <select id="movatomRemoveMode">
+            <option value="edges" selected>Só bordas</option>
+            <option value="all">Toda imagem</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <button type="button" class="btn-primary" id="movatomExportBtn" disabled style="width:100%">Salvar MP4</button>
+          <p class="movatom-status" id="movatomStatus"></p>
+        </div>
+      </aside>
+    </div>
       </div>
+
+      <main class="panel movatom-preview" id="movatomPreview">
+        <div class="movatom-preview-top tonatom-preview-top">
+          <h2>Preview</h2>
+          <div class="tonatom-compare-toggle" id="movatomCompareToggle">
+            <button type="button" class="tonatom-compare-btn movatom-compare-btn active" id="movatomShowAfterBtn" data-view="after">Depois</button>
+            <button type="button" class="tonatom-compare-btn movatom-compare-btn" id="movatomShowBeforeBtn" data-view="before">Antes</button>
+          </div>
+        </div>
+        <div class="tonatom-preview-card" style="min-height:0;flex:1;display:flex;flex-direction:column">
+          <div class="tonatom-preview-card-header">
+            <span id="movatomFrameLabel">Frame 0 / 0</span>
+          </div>
+          <div class="tonatom-canvas-wrap is-idle" id="movatomFrameWrap">
+            <div class="tonatom-drop-hint" id="movatomFrameHint"><strong>Vídeo</strong></div>
+            <canvas id="movatomFrameCanvas" class="hidden"></canvas>
+          </div>
+        </div>
+        <div class="movatom-frame-bar">
+          <span class="movatom-frame-label" id="movatomTimeLabel">0:00</span>
+          <input type="range" id="movatomFrameSlider" min="0" max="0" value="0" disabled>
+        </div>
+        <video id="movatomVideo" class="hidden" muted playsinline preload="auto"></video>
+      </main>
+
+      <main class="panel tonatom-preview" id="tonatomPreview">
+        <div class="tonatom-preview-top">
+          <h2>Preview</h2>
+          <div class="tonatom-compare-toggle" id="tonatomCompareToggle">
+            <button type="button" class="tonatom-compare-btn active" id="tonatomShowAfterBtn" data-view="after">Depois</button>
+            <button type="button" class="tonatom-compare-btn" id="tonatomShowBeforeBtn" data-view="before">Antes</button>
+          </div>
+        </div>
+        <div class="tonatom-preview-body">
+          <nav class="tonatom-stepper" id="tonatomStepper" aria-label="Etapas do lote">
+            <ol class="tonatom-steps" id="tonatomSteps">
+              <li class="tonatom-step is-active" data-step="1" title="Imagem">
+                <span class="tonatom-step-dot">1</span>
+                <span class="tonatom-step-label">Imagem</span>
+              </li>
+              <li class="tonatom-step" data-step="2" title="Cor referência">
+                <span class="tonatom-step-dot">2</span>
+                <span class="tonatom-step-label">Origem</span>
+              </li>
+              <li class="tonatom-step" data-step="3" title="Pasta">
+                <span class="tonatom-step-dot">3</span>
+                <span class="tonatom-step-label">Pasta</span>
+              </li>
+              <li class="tonatom-step" data-step="4" title="Cor alvo">
+                <span class="tonatom-step-dot">4</span>
+                <span class="tonatom-step-label">Alvo</span>
+              </li>
+              <li class="tonatom-step" data-step="5" title="Salvar lote">
+                <span class="tonatom-step-dot">5</span>
+                <span class="tonatom-step-label">Salvar</span>
+              </li>
+            </ol>
+          </nav>
+        <div class="tonatom-preview-grid">
+          <div class="tonatom-preview-card">
+            <div class="tonatom-preview-card-header">
+              <span>Referência</span>
+            </div>
+            <div class="tonatom-canvas-wrap is-idle" id="tonatomRefWrap">
+              <div class="tonatom-drop-hint" id="tonatomRefHint">
+                <strong>Referência</strong>
+              </div>
+              <canvas id="tonatomRefCanvas" class="hidden"></canvas>
+            </div>
+          </div>
+          <div class="tonatom-preview-card tonatom-batch-panel">
+            <div class="tonatom-preview-card-header">
+              <span id="tonatomBatchPreviewLabel">Lote</span>
+            </div>
+            <div class="tonatom-canvas-wrap is-idle" id="tonatomBatchWrap">
+              <div class="tonatom-drop-hint" id="tonatomBatchHint">
+                <strong>Lote</strong>
+              </div>
+              <canvas id="tonatomBatchCanvas" class="hidden"></canvas>
+            </div>
+            <div class="tonatom-batch-list" id="tonatomBatchList">
+              <p class="tonatom-batch-empty" id="tonatomBatchEmpty">Vazio</p>
+            </div>
+          </div>
+        </div>
+        </div>
+      </main>
 
       <main class="panel preview-area shared-preview" id="sharedPreview">
         <div class="preview-top">
@@ -3115,10 +3941,10 @@
     <div id="tutorialSpotlight" class="tutorial-spotlight hidden" aria-hidden="true"></div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
       <div class="tutorial-card-header">
-        <span class="tutorial-section-badge" id="tutorialSectionBadge">PicAtom · DesAtom · RedAtom</span>
+        <span class="tutorial-section-badge" id="tutorialSectionBadge">PicAtom · DesAtom · RedAtom · TonAtom</span>
         <button type="button" class="tutorial-skip-btn" id="tutorialSkipBtn">Pular tutorial</button>
       </div>
-      <h2 id="tutorialTitle">Bem-vindo ao PicAtom, DesAtom e RedAtom</h2>
+      <h2 id="tutorialTitle">Bem-vindo ao PicAtom, DesAtom, RedAtom e TonAtom</h2>
       <div class="tutorial-body" id="tutorialBody"></div>
       <div class="tutorial-progress">
         <div class="tutorial-progress-track">
@@ -3136,7 +3962,7 @@
   <div id="tutorialConfirm" class="tutorial-confirm hidden" role="alertdialog" aria-labelledby="tutorialConfirmTitle" aria-modal="true">
     <div class="tutorial-confirm-box">
       <h3 id="tutorialConfirmTitle">Pular tutorial?</h3>
-      <p>Tem certeza que deseja pular? O tutorial cobre <strong>PicAtom</strong>, <strong>DesAtom</strong> e <strong>RedAtom</strong>. Você poderá rever depois pelo botão <strong>Tutorial</strong> no topo.</p>
+      <p>Tem certeza que deseja pular? O tutorial cobre <strong>PicAtom</strong>, <strong>DesAtom</strong>, <strong>RedAtom</strong> e <strong>TonAtom</strong>. Você poderá rever depois pelo botão <strong>Tutorial</strong> no topo.</p>
       <div class="tutorial-confirm-actions">
         <button type="button" class="btn-secondary" id="tutorialConfirmCancel">Cancelar</button>
         <button type="button" class="btn-danger" id="tutorialConfirmOk">Sim, pular</button>
@@ -7406,10 +8232,16 @@
     const modePicAtomBtn = document.getElementById("modePicAtomBtn");
     const modeDesAtomBtn = document.getElementById("modeDesAtomBtn");
     const modeRedAtomBtn = document.getElementById("modeRedAtomBtn");
+    const modeTonAtomBtn = document.getElementById("modeTonAtomBtn");
+    const modeMovAtomBtn = document.getElementById("modeMovAtomBtn");
     const workspace = document.getElementById("workspace");
     const picatomView = document.getElementById("picatomView");
     const desatomView = document.getElementById("desatomView");
     const redatomView = document.getElementById("redatomView");
+    const tonatomView = document.getElementById("tonatomView");
+    const movatomView = document.getElementById("movatomView");
+    const tonatomPreview = document.getElementById("tonatomPreview");
+    const movatomPreview = document.getElementById("movatomPreview");
     const toolsBar = document.getElementById("toolsBar");
     const desatomCompareToggle = document.getElementById("desatomCompareToggle");
     const redatomPreviewMeta = document.getElementById("redatomPreviewMeta");
@@ -7419,12 +8251,16 @@
     const brandPrefixPic = document.getElementById("brandPrefixPic");
     const brandPrefixDes = document.getElementById("brandPrefixDes");
     const brandPrefixRed = document.getElementById("brandPrefixRed");
+    const brandPrefixTon = document.getElementById("brandPrefixTon");
+    const brandPrefixMov = document.getElementById("brandPrefixMov");
     const brandSubtitle = document.getElementById("brandSubtitle");
 
     const MODE_BUTTONS = {
       picatom: modePicAtomBtn,
       desatom: modeDesAtomBtn,
       redatom: modeRedAtomBtn,
+      tonatom: modeTonAtomBtn,
+      movatom: modeMovAtomBtn,
     };
 
     const IMAGES_DIR = "imagens/";
@@ -7433,6 +8269,8 @@
       picatom: { src: `${IMAGES_DIR}icon.png`, alt: "Ícone PicAtom" },
       desatom: { src: `${IMAGES_DIR}desatom-icon.png`, alt: "Logo DesAtom" },
       redatom: { src: `${IMAGES_DIR}redatom-icon.png`, alt: "Logo RedAtom" },
+      tonatom: { src: `${IMAGES_DIR}tonatom-icon.png`, alt: "Logo TonAtom" },
+      movatom: { src: `${IMAGES_DIR}movatom-icon.png`, alt: "Logo MovAtom" },
     };
 
     const MODE_COPY = {
@@ -7447,6 +8285,14 @@
       redatom: {
         title: "RedAtom",
         subtitle: "Redimensione a imagem e escolha o formato de exportação (PNG, JPEG ou WebP).",
+      },
+      tonatom: {
+        title: "TonAtom",
+        subtitle: "Ajuste de tom em lote — estilo Ctrl+U.",
+      },
+      movatom: {
+        title: "MovAtom",
+        subtitle: "Vídeo → frames → remove fundo → novo fundo → MP4.",
       },
     };
 
@@ -7463,6 +8309,8 @@
         picatom: "favicon-picatom",
         desatom: "favicon-desatom",
         redatom: "favicon-redatom",
+        tonatom: "favicon-tonatom",
+        movatom: "favicon-movatom",
       };
       const prefix = prefixes[mode] || "favicon-picatom";
       const stamp = "?v=8";
@@ -7495,14 +8343,20 @@
         picatomView.classList.toggle("is-active", mode === "picatom");
         desatomView.classList.toggle("is-active", mode === "desatom");
         redatomView.classList.toggle("is-active", mode === "redatom");
+        tonatomView.classList.toggle("is-active", mode === "tonatom");
+        movatomView.classList.toggle("is-active", mode === "movatom");
         currentAppMode = mode;
         resetDesatomCompareIfNeeded(mode);
       }
 
       workspace.classList.toggle("desatom-mode", mode === "desatom");
       workspace.classList.toggle("redatom-mode", mode === "redatom");
+      workspace.classList.toggle("tonatom-mode", mode === "tonatom");
+      workspace.classList.toggle("movatom-mode", mode === "movatom");
       appHeader.classList.toggle("desatom-mode", mode === "desatom");
       appHeader.classList.toggle("redatom-mode", mode === "redatom");
+      appHeader.classList.toggle("tonatom-mode", mode === "tonatom");
+      appHeader.classList.toggle("movatom-mode", mode === "movatom");
       updateAppFavicon(mode);
       toolsBar.classList.toggle("hidden", mode !== "picatom");
       desatomCompareToggle.classList.toggle("hidden", mode !== "desatom");
@@ -7512,6 +8366,8 @@
       brandPrefixPic.classList.toggle("hidden", mode !== "picatom");
       brandPrefixDes.classList.toggle("hidden", mode !== "desatom");
       brandPrefixRed.classList.toggle("hidden", mode !== "redatom");
+      brandPrefixTon.classList.toggle("hidden", mode !== "tonatom");
+      brandPrefixMov.classList.toggle("hidden", mode !== "movatom");
       const logo = MODE_LOGOS[mode];
       brandLogo.src = `${logo.src}?v=8`;
       brandLogo.alt = logo.alt;
@@ -7531,6 +8387,8 @@
     modePicAtomBtn.addEventListener("click", () => setAppMode("picatom"));
     modeDesAtomBtn.addEventListener("click", () => setAppMode("desatom"));
     modeRedAtomBtn.addEventListener("click", () => setAppMode("redatom"));
+    modeTonAtomBtn.addEventListener("click", () => setAppMode("tonatom"));
+    modeMovAtomBtn.addEventListener("click", () => setAppMode("movatom"));
     window.addEventListener("resize", () => {
       updateModeIndicator(currentAppMode);
     });
@@ -8047,7 +8905,1021 @@
 
     updateRedAtomQualityVisibility();
 
-    const TUTORIAL_STORAGE_KEY = "picatom-tutorial-v3";
+    const tonatomRefInput = document.getElementById("tonatomRefInput");
+    const tonatomRefName = document.getElementById("tonatomRefName");
+    const tonatomOrigemSwatch = document.getElementById("tonatomOrigemSwatch");
+    const tonatomOrigemInfo = document.getElementById("tonatomOrigemInfo");
+    const tonatomOrigemPickerBtn = document.getElementById("tonatomOrigemPickerBtn");
+    const tonatomAlvoSwatch = document.getElementById("tonatomAlvoSwatch");
+    const tonatomAlvoInfo = document.getElementById("tonatomAlvoInfo");
+    const tonatomAlvoPickerBtn = document.getElementById("tonatomAlvoPickerBtn");
+    const tonatomTolerance = document.getElementById("tonatomTolerance");
+    const tonatomToleranceValue = document.getElementById("tonatomToleranceValue");
+    const tonatomBatchInput = document.getElementById("tonatomBatchInput");
+    const tonatomBatchFilesInput = document.getElementById("tonatomBatchFilesInput");
+    const tonatomBatchName = document.getElementById("tonatomBatchName");
+    const tonatomProcessBtn = document.getElementById("tonatomProcessBtn");
+    const tonatomStatus = document.getElementById("tonatomStatus");
+    const tonatomRefWrap = document.getElementById("tonatomRefWrap");
+    const tonatomRefHint = document.getElementById("tonatomRefHint");
+    const tonatomRefCanvas = document.getElementById("tonatomRefCanvas");
+    const tonatomBatchWrap = document.getElementById("tonatomBatchWrap");
+    const tonatomBatchHint = document.getElementById("tonatomBatchHint");
+    const tonatomBatchCanvas = document.getElementById("tonatomBatchCanvas");
+    const tonatomBatchList = document.getElementById("tonatomBatchList");
+    const tonatomBatchEmpty = document.getElementById("tonatomBatchEmpty");
+    const tonatomBatchPreviewLabel = document.getElementById("tonatomBatchPreviewLabel");
+    const tonatomShowAfterBtn = document.getElementById("tonatomShowAfterBtn");
+    const tonatomShowBeforeBtn = document.getElementById("tonatomShowBeforeBtn");
+    const tonatomSteps = document.getElementById("tonatomSteps");
+    const tonatomStepper = document.getElementById("tonatomStepper");
+    const tonatomRefCtx = tonatomRefCanvas.getContext("2d", { willReadFrequently: true });
+    const tonatomBatchCtx = tonatomBatchCanvas.getContext("2d", { willReadFrequently: true });
+
+    let tonatomRefImageData = null;
+    let tonatomOrigemColor = null;
+    let tonatomAlvoColor = null;
+    let tonatomBatchFiles = [];
+    let tonatomBatchIndex = -1;
+    let tonatomBatchImageData = null;
+    let tonatomBatchProcessed = null;
+    let tonatomCompareView = "after";
+    let tonatomPickMode = "origem";
+    let tonatomWorkflowComplete = false;
+
+    const TONATOM_STEP_COLORS = ["#FF9800", "#F44336", "#E91E63", "#9C27B0", "#038bbb"];
+    const TONATOM_STEP_DONE_COLOR = "#43A047";
+    const TONATOM_STEP_GRAY = "#d8d8d8";
+
+    const TONATOM_IMAGE_TYPES = new Set([
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/gif",
+    ]);
+
+    function tonatomGetCompletedStep() {
+      if (!tonatomRefImageData) return 0;
+      if (!tonatomOrigemColor) return 1;
+      if (!tonatomBatchFiles.length) return 2;
+      if (!tonatomAlvoColor) return 3;
+      return 4;
+    }
+
+    function tonatomActiveStep() {
+      if (tonatomWorkflowComplete) return 1;
+      return Math.min(tonatomGetCompletedStep() + 1, 5);
+    }
+
+    function tonatomClearBatchState() {
+      tonatomBatchFiles = [];
+      tonatomBatchIndex = -1;
+      tonatomBatchImageData = null;
+      tonatomBatchProcessed = null;
+      tonatomAlvoColor = null;
+      renderTonAtomBatchList();
+      paintTonAtomBatchPreview();
+      updateTonAtomAlvoUI();
+    }
+
+    function tonatomResetWorkflowState() {
+      tonatomWorkflowComplete = false;
+      tonatomRefImageData = null;
+      tonatomOrigemColor = null;
+      tonatomRefName.textContent = "Nenhuma";
+      tonatomClearBatchState();
+      drawTonAtomReference();
+      updateTonAtomOrigemUI();
+    }
+
+    function updateTonAtomStepper() {
+      if (!tonatomSteps) return;
+      const steps = [...tonatomSteps.querySelectorAll(".tonatom-step")];
+      const done = tonatomWorkflowComplete ? 5 : tonatomGetCompletedStep();
+      const active = tonatomWorkflowComplete ? null : Math.min(done + 1, 5);
+
+      steps.forEach((el, idx) => {
+        const n = idx + 1;
+        const color = TONATOM_STEP_COLORS[idx];
+        const dot = el.querySelector(".tonatom-step-dot");
+        el.classList.remove("is-done", "is-active", "is-pending", "is-complete-all");
+
+        if (tonatomWorkflowComplete) {
+          el.classList.add("is-complete-all");
+          dot.style.background = TONATOM_STEP_DONE_COLOR;
+          dot.style.color = "#fff";
+        } else if (n <= done) {
+          el.classList.add("is-done");
+          dot.style.background = color;
+          dot.style.color = "#fff";
+        } else if (n === active) {
+          el.classList.add("is-active");
+          dot.style.background = color;
+          dot.style.color = "#fff";
+        } else {
+          el.classList.add("is-pending");
+          dot.style.background = TONATOM_STEP_GRAY;
+          dot.style.color = "#444";
+        }
+
+        let lineFrom = TONATOM_STEP_GRAY;
+        let lineTo = TONATOM_STEP_GRAY;
+        if (tonatomWorkflowComplete) {
+          lineFrom = TONATOM_STEP_DONE_COLOR;
+          lineTo = TONATOM_STEP_DONE_COLOR;
+        } else if (n <= done) {
+          lineFrom = color;
+          lineTo = n < done ? TONATOM_STEP_COLORS[idx + 1] : (active === n + 1 ? TONATOM_STEP_COLORS[idx + 1] : TONATOM_STEP_GRAY);
+        } else if (n === done + 1 && done > 0) {
+          lineFrom = TONATOM_STEP_COLORS[idx - 1];
+          lineTo = TONATOM_STEP_GRAY;
+        }
+        el.style.setProperty("--tonatom-line-from", lineFrom);
+        el.style.setProperty("--tonatom-line-to", lineTo);
+      });
+      tonatomStepper?.classList.toggle("is-workflow-complete", tonatomWorkflowComplete);
+    }
+
+    function updateTonAtomControlLocks() {
+      const active = tonatomActiveStep();
+      tonatomView.querySelectorAll("[data-tonatom-step]").forEach((el) => {
+        const step = Number(el.dataset.tonatomStep);
+        const stepMax = Number(el.dataset.tonatomStepMax || step);
+        let unlocked = false;
+        if (tonatomWorkflowComplete) {
+          unlocked = step === 1;
+        } else {
+          unlocked = active >= step && active <= stepMax;
+        }
+        el.classList.toggle("tonatom-step-locked", !unlocked);
+      });
+    }
+
+    function setTonAtomStatus(message, type = "") {
+      tonatomStatus.textContent = message;
+      tonatomStatus.classList.remove("ok", "error");
+      if (type) tonatomStatus.classList.add(type);
+    }
+
+    function isTonAtomImageFile(file) {
+      if (!file) return false;
+      if (TONATOM_IMAGE_TYPES.has(file.type)) return true;
+      return /\.(png|jpe?g|webp|gif)$/i.test(file.name);
+    }
+
+    function rgbToHsl(r, g, b) {
+      const rn = r / 255;
+      const gn = g / 255;
+      const bn = b / 255;
+      const max = Math.max(rn, gn, bn);
+      const min = Math.min(rn, gn, bn);
+      let h = 0;
+      let s = 0;
+      const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case rn: h = (gn - bn) / d + (gn < bn ? 6 : 0); break;
+          case gn: h = (bn - rn) / d + 2; break;
+          default: h = (rn - gn) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return { h: h * 360, s: s * 100, l: l * 100 };
+    }
+
+    function hslToRgb(h, s, l) {
+      let hue = ((h % 360) + 360) % 360;
+      let sat = Math.max(0, Math.min(100, s)) / 100;
+      let lit = Math.max(0, Math.min(100, l)) / 100;
+      if (sat === 0) {
+        const v = Math.round(lit * 255);
+        return { r: v, g: v, b: v };
+      }
+      const hue2rgb = (p, q, t) => {
+        let tv = t;
+        if (tv < 0) tv += 1;
+        if (tv > 1) tv -= 1;
+        if (tv < 1 / 6) return p + (q - p) * 6 * tv;
+        if (tv < 1 / 2) return q;
+        if (tv < 2 / 3) return p + (q - p) * (2 / 3 - tv) * 6;
+        return p;
+      };
+      const q = lit < 0.5 ? lit * (1 + sat) : lit + sat - lit * sat;
+      const p = 2 * lit - q;
+      const hk = hue / 360;
+      return {
+        r: Math.round(hue2rgb(p, q, hk + 1 / 3) * 255),
+        g: Math.round(hue2rgb(p, q, hk) * 255),
+        b: Math.round(hue2rgb(p, q, hk - 1 / 3) * 255),
+      };
+    }
+
+    function normalizeHueDelta(delta) {
+      let d = delta % 360;
+      if (d > 180) d -= 360;
+      if (d < -180) d += 360;
+      return d;
+    }
+
+    function tonatomMatchWeight(distance, tolerance) {
+      if (distance > tolerance) return 0;
+      const t = 1 - distance / Math.max(tolerance, 1);
+      return t * t * (3 - 2 * t);
+    }
+
+    function shiftTonAtomTone(imageData, alvoColor, origemColor, tolerance) {
+      const alvoHsl = rgbToHsl(alvoColor.r, alvoColor.g, alvoColor.b);
+      const origemHsl = rgbToHsl(origemColor.r, origemColor.g, origemColor.b);
+      const dH = normalizeHueDelta(origemHsl.h - alvoHsl.h);
+      const dS = origemHsl.s - alvoHsl.s;
+      const dL = origemHsl.l - alvoHsl.l;
+
+      const out = cloneImageData(imageData);
+      const data = out.data;
+      let affected = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 10) continue;
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const dist = colorDistance(r, g, b, alvoColor.r, alvoColor.g, alvoColor.b);
+        const weight = tonatomMatchWeight(dist, tolerance);
+        if (weight <= 0) continue;
+
+        const pixelHsl = rgbToHsl(r, g, b);
+        const rgb = hslToRgb(
+          pixelHsl.h + dH * weight,
+          pixelHsl.s + dS * weight,
+          pixelHsl.l + dL * weight,
+        );
+        data[i] = rgb.r;
+        data[i + 1] = rgb.g;
+        data[i + 2] = rgb.b;
+        affected += 1;
+      }
+
+      return { imageData: out, affected };
+    }
+
+    function formatTonAtomColorLabel(color) {
+      return rgbToHex(color.r, color.g, color.b).toUpperCase();
+    }
+
+    function updateTonAtomOrigemUI() {
+      if (!tonatomOrigemColor) {
+        tonatomOrigemSwatch.style.background = "#333";
+        tonatomOrigemInfo.textContent = "Clique na referência";
+        return;
+      }
+      tonatomOrigemSwatch.style.background = `rgb(${tonatomOrigemColor.r}, ${tonatomOrigemColor.g}, ${tonatomOrigemColor.b})`;
+      tonatomOrigemInfo.textContent = formatTonAtomColorLabel(tonatomOrigemColor);
+    }
+
+    function updateTonAtomAlvoUI() {
+      if (!tonatomAlvoColor) {
+        tonatomAlvoSwatch.style.background = "#333";
+        tonatomAlvoInfo.textContent = "Clique no lote";
+        return;
+      }
+      tonatomAlvoSwatch.style.background = `rgb(${tonatomAlvoColor.r}, ${tonatomAlvoColor.g}, ${tonatomAlvoColor.b})`;
+      tonatomAlvoInfo.textContent = formatTonAtomColorLabel(tonatomAlvoColor);
+    }
+
+    function fitTonAtomCanvas(canvas, ctx, imageData) {
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      ctx.putImageData(imageData, 0, 0);
+      canvas.classList.remove("hidden");
+    }
+
+    function drawTonAtomReference() {
+      if (!tonatomRefImageData) {
+        tonatomRefCanvas.classList.add("hidden");
+        tonatomRefHint.style.display = "flex";
+        tonatomRefWrap.classList.add("is-idle");
+        return;
+      }
+      fitTonAtomCanvas(tonatomRefCanvas, tonatomRefCtx, tonatomRefImageData);
+      tonatomRefHint.style.display = "none";
+      tonatomRefWrap.classList.remove("is-idle");
+    }
+
+    function rebuildTonAtomPreview() {
+      if (!tonatomBatchImageData || !tonatomOrigemColor || !tonatomAlvoColor) {
+        tonatomBatchProcessed = null;
+        return;
+      }
+      const tolerance = Number(tonatomTolerance.value);
+      tonatomBatchProcessed = shiftTonAtomTone(
+        tonatomBatchImageData,
+        tonatomAlvoColor,
+        tonatomOrigemColor,
+        tolerance,
+      ).imageData;
+    }
+
+    async function loadImageFileToData(file) {
+      const url = URL.createObjectURL(file);
+      try {
+        const img = await new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = url;
+        });
+        const off = document.createElement("canvas");
+        off.width = img.naturalWidth;
+        off.height = img.naturalHeight;
+        const offCtx = off.getContext("2d", { willReadFrequently: true });
+        offCtx.drawImage(img, 0, 0);
+        return offCtx.getImageData(0, 0, off.width, off.height);
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    function renderTonAtomBatchList() {
+      tonatomBatchList.querySelectorAll(".tonatom-batch-item").forEach((node) => node.remove());
+      if (!tonatomBatchFiles.length) {
+        tonatomBatchEmpty.style.display = "block";
+        tonatomBatchName.textContent = "Nenhuma";
+        return;
+      }
+      tonatomBatchEmpty.style.display = "none";
+      tonatomBatchName.textContent = `${tonatomBatchFiles.length} img`;
+      tonatomBatchFiles.forEach((file, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `tonatom-batch-item${index === tonatomBatchIndex ? " active" : ""}`;
+        btn.innerHTML = `<span class="material-icons" aria-hidden="true">image</span><span>${file.webkitRelativePath || file.name}</span>`;
+        btn.addEventListener("click", () => selectTonAtomBatchIndex(index));
+        tonatomBatchList.appendChild(btn);
+      });
+    }
+
+    async function selectTonAtomBatchIndex(index) {
+      if (index < 0 || index >= tonatomBatchFiles.length) return;
+      tonatomBatchIndex = index;
+      renderTonAtomBatchList();
+      const file = tonatomBatchFiles[index];
+      tonatomBatchPreviewLabel.textContent = file.webkitRelativePath || file.name;
+      try {
+        tonatomBatchImageData = await loadImageFileToData(file);
+        tonatomBatchProcessed = null;
+        rebuildTonAtomPreview();
+        paintTonAtomBatchPreview();
+      } catch {
+        setTonAtomStatus("Não foi possível carregar a imagem do lote.", "error");
+      }
+    }
+
+    function paintTonAtomBatchPreview() {
+      if (!tonatomBatchImageData) {
+        tonatomBatchCanvas.classList.add("hidden");
+        tonatomBatchHint.style.display = "flex";
+        tonatomBatchWrap.classList.add("is-idle");
+        return;
+      }
+      const viewData = tonatomCompareView === "after" && tonatomBatchProcessed
+        ? tonatomBatchProcessed
+        : tonatomBatchImageData;
+      fitTonAtomCanvas(tonatomBatchCanvas, tonatomBatchCtx, viewData);
+      tonatomBatchHint.style.display = "none";
+      tonatomBatchWrap.classList.remove("is-idle");
+    }
+
+    function setTonAtomCompareView(view) {
+      tonatomCompareView = view;
+      tonatomShowAfterBtn.classList.toggle("active", view === "after");
+      tonatomShowBeforeBtn.classList.toggle("active", view === "before");
+      paintTonAtomBatchPreview();
+    }
+
+    function updateTonAtomControls() {
+      const active = tonatomActiveStep();
+      const done = tonatomGetCompletedStep();
+      const canProcess = !tonatomWorkflowComplete && active === 5 && done >= 4;
+
+      updateTonAtomControlLocks();
+      updateTonAtomStepper();
+
+      tonatomOrigemPickerBtn.disabled = active !== 2 || !tonatomRefImageData;
+      tonatomAlvoPickerBtn.disabled = active !== 4 || !tonatomBatchImageData;
+      tonatomProcessBtn.disabled = !canProcess;
+      tonatomShowBeforeBtn.disabled = !tonatomBatchImageData || active < 4;
+      tonatomShowAfterBtn.disabled = !tonatomBatchProcessed || active < 4;
+    }
+
+    function imageDataToBlob(imageData, mimeType = "image/png") {
+      const off = document.createElement("canvas");
+      off.width = imageData.width;
+      off.height = imageData.height;
+      off.getContext("2d").putImageData(imageData, 0, 0);
+      return new Promise((resolve) => {
+        off.toBlob((blob) => resolve(blob), mimeType);
+      });
+    }
+
+    function tonatomPngFileName(fileName) {
+      const base = fileName.replace(/[/\\]/g, "_").replace(/\.[^.]+$/i, "");
+      return `${base}.png`;
+    }
+
+    async function saveTonAtomBlob(dirHandle, fileName, blob) {
+      if (dirHandle) {
+        const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return;
+      }
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function pickTonAtomOutputDir() {
+      if (!window.showDirectoryPicker) return null;
+      return window.showDirectoryPicker({ mode: "readwrite" });
+    }
+
+    async function processTonAtomBatch() {
+      if (!tonatomOrigemColor || !tonatomAlvoColor || !tonatomBatchFiles.length) return;
+
+      let outputDir = null;
+      try {
+        outputDir = await pickTonAtomOutputDir();
+      } catch {
+        setTonAtomStatus("Salvamento cancelado.", "");
+        return;
+      }
+
+      const tolerance = Number(tonatomTolerance.value);
+      tonatomProcessBtn.disabled = true;
+      let saved = 0;
+      try {
+        for (let i = 0; i < tonatomBatchFiles.length; i += 1) {
+          const file = tonatomBatchFiles[i];
+          setTonAtomStatus(`Salvando ${i + 1}/${tonatomBatchFiles.length}…`);
+          const imageData = await loadImageFileToData(file);
+          const { imageData: processed } = shiftTonAtomTone(
+            imageData,
+            tonatomAlvoColor,
+            tonatomOrigemColor,
+            tolerance,
+          );
+          const blob = await imageDataToBlob(processed, "image/png");
+          const outName = tonatomPngFileName(file.webkitRelativePath || file.name);
+          await saveTonAtomBlob(outputDir, outName, blob);
+          saved += 1;
+        }
+        setTonAtomStatus(
+          outputDir ? `${saved} salvas em ${outputDir.name}.` : `${saved} baixadas.`,
+          "ok",
+        );
+        tonatomWorkflowComplete = true;
+      } catch (err) {
+        setTonAtomStatus(err?.message || "Erro ao salvar.", "error");
+      } finally {
+        updateTonAtomControls();
+      }
+    }
+
+    function pickTonAtomColorFromCanvas(event, canvas, imageData, onPick) {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const x = Math.floor(((event.clientX - rect.left) / rect.width) * canvas.width);
+      const y = Math.floor(((event.clientY - rect.top) / rect.height) * canvas.height);
+      if (x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) return;
+      const idx = (y * imageData.width + x) * 4;
+      const data = imageData.data;
+      onPick({
+        r: data[idx],
+        g: data[idx + 1],
+        b: data[idx + 2],
+        a: data[idx + 3],
+      });
+    }
+
+    function pickTonAtomOrigemFromEvent(event) {
+      if (tonatomActiveStep() !== 2 || !tonatomRefImageData) return;
+      pickTonAtomColorFromCanvas(event, tonatomRefCanvas, tonatomRefImageData, (color) => {
+        tonatomOrigemColor = color;
+        updateTonAtomOrigemUI();
+        rebuildTonAtomPreview();
+        paintTonAtomBatchPreview();
+        updateTonAtomControls();
+      });
+    }
+
+    function pickTonAtomAlvoFromEvent(event) {
+      if (tonatomActiveStep() !== 4 || !tonatomBatchImageData) return;
+      pickTonAtomColorFromCanvas(event, tonatomBatchCanvas, tonatomBatchImageData, (color) => {
+        tonatomAlvoColor = color;
+        updateTonAtomAlvoUI();
+        rebuildTonAtomPreview();
+        paintTonAtomBatchPreview();
+        setTonAtomCompareView("after");
+        updateTonAtomControls();
+      });
+    }
+
+    tonatomRefInput.addEventListener("change", async () => {
+      const file = tonatomRefInput.files?.[0];
+      if (!file) return;
+      if (tonatomWorkflowComplete) {
+        tonatomResetWorkflowState();
+      }
+      tonatomRefName.textContent = file.name;
+      try {
+        tonatomRefImageData = await loadImageFileToData(file);
+        tonatomOrigemColor = null;
+        drawTonAtomReference();
+        updateTonAtomOrigemUI();
+      } catch {
+        setTonAtomStatus("Erro ao carregar.", "error");
+      }
+      updateTonAtomControls();
+      rebuildTonAtomPreview();
+      paintTonAtomBatchPreview();
+      tonatomRefInput.value = "";
+    });
+
+    tonatomRefWrap.addEventListener("click", (event) => {
+      if (!tonatomRefImageData) return;
+      pickTonAtomOrigemFromEvent(event);
+    });
+
+    tonatomBatchWrap.addEventListener("click", (event) => {
+      if (!tonatomBatchImageData) return;
+      pickTonAtomAlvoFromEvent(event);
+    });
+
+    tonatomOrigemPickerBtn.addEventListener("click", () => {
+      tonatomPickMode = "origem";
+    });
+
+    tonatomAlvoPickerBtn.addEventListener("click", () => {
+      tonatomPickMode = "alvo";
+      setTonAtomCompareView("before");
+    });
+
+    tonatomTolerance.addEventListener("input", () => {
+      tonatomToleranceValue.textContent = tonatomTolerance.value;
+      rebuildTonAtomPreview();
+      paintTonAtomBatchPreview();
+    });
+
+    async function setTonAtomBatchFromFileList(fileList) {
+      if (tonatomActiveStep() !== 3) return;
+      tonatomBatchFiles = [...fileList].filter(isTonAtomImageFile);
+      tonatomBatchIndex = tonatomBatchFiles.length ? 0 : -1;
+      tonatomAlvoColor = null;
+      updateTonAtomAlvoUI();
+      renderTonAtomBatchList();
+      if (tonatomBatchIndex >= 0) {
+        await selectTonAtomBatchIndex(tonatomBatchIndex);
+      } else {
+        tonatomBatchImageData = null;
+        tonatomBatchProcessed = null;
+        paintTonAtomBatchPreview();
+      }
+      updateTonAtomControls();
+    }
+
+    tonatomBatchInput.addEventListener("change", async () => {
+      if (!tonatomBatchInput.files?.length) return;
+      await setTonAtomBatchFromFileList(tonatomBatchInput.files);
+      tonatomBatchInput.value = "";
+    });
+
+    tonatomBatchFilesInput.addEventListener("change", async () => {
+      if (!tonatomBatchFilesInput.files?.length) return;
+      await setTonAtomBatchFromFileList(tonatomBatchFilesInput.files);
+      tonatomBatchFilesInput.value = "";
+    });
+
+    tonatomProcessBtn.addEventListener("click", processTonAtomBatch);
+
+    tonatomShowAfterBtn.addEventListener("click", () => setTonAtomCompareView("after"));
+    tonatomShowBeforeBtn.addEventListener("click", () => setTonAtomCompareView("before"));
+
+    updateTonAtomOrigemUI();
+    updateTonAtomAlvoUI();
+    updateTonAtomStepper();
+    updateTonAtomControls();
+
+    const movatomVideoInput = document.getElementById("movatomVideoInput");
+    const movatomVideoName = document.getElementById("movatomVideoName");
+    const movatomBgSwatch = document.getElementById("movatomBgSwatch");
+    const movatomBgInfo = document.getElementById("movatomBgInfo");
+    const movatomBgPickerBtn = document.getElementById("movatomBgPickerBtn");
+    const movatomNewBgInput = document.getElementById("movatomNewBgInput");
+    const movatomTolerance = document.getElementById("movatomTolerance");
+    const movatomToleranceValue = document.getElementById("movatomToleranceValue");
+    const movatomRemoveMode = document.getElementById("movatomRemoveMode");
+    const movatomExportBtn = document.getElementById("movatomExportBtn");
+    const movatomStatus = document.getElementById("movatomStatus");
+    const movatomFrameWrap = document.getElementById("movatomFrameWrap");
+    const movatomFrameHint = document.getElementById("movatomFrameHint");
+    const movatomFrameCanvas = document.getElementById("movatomFrameCanvas");
+    const movatomFrameLabel = document.getElementById("movatomFrameLabel");
+    const movatomFrameSlider = document.getElementById("movatomFrameSlider");
+    const movatomTimeLabel = document.getElementById("movatomTimeLabel");
+    const movatomShowAfterBtn = document.getElementById("movatomShowAfterBtn");
+    const movatomShowBeforeBtn = document.getElementById("movatomShowBeforeBtn");
+    const movatomVideo = document.getElementById("movatomVideo");
+    const movatomFrameCtx = movatomFrameCanvas.getContext("2d", { willReadFrequently: true });
+
+    let movatomVideoFile = null;
+    let movatomRawFrames = [];
+    let movatomProcessedFrames = [];
+    let movatomFps = 24;
+    let movatomFrameIndex = 0;
+    let movatomBgColor = null;
+    let movatomCompareView = "after";
+    let movatomFfmpeg = null;
+    const MOVATOM_MAX_FRAMES = 600;
+
+    function setMovAtomStatus(message, type = "") {
+      movatomStatus.textContent = message;
+      movatomStatus.classList.remove("ok", "error");
+      if (type) movatomStatus.classList.add(type);
+    }
+
+    function movatomParseHex(hex) {
+      return {
+        r: parseInt(hex.slice(1, 3), 16),
+        g: parseInt(hex.slice(3, 5), 16),
+        b: parseInt(hex.slice(5, 7), 16),
+      };
+    }
+
+    function movatomGetNewBgColor() {
+      return movatomParseHex(movatomNewBgInput.value || "#ffffff");
+    }
+
+    function updateMovAtomBgUI() {
+      if (!movatomBgColor) {
+        movatomBgSwatch.style.background = "#333";
+        movatomBgInfo.textContent = "Clique no frame";
+        return;
+      }
+      movatomBgSwatch.style.background = `rgb(${movatomBgColor.r}, ${movatomBgColor.g}, ${movatomBgColor.b})`;
+      movatomBgInfo.textContent = rgbToHex(movatomBgColor.r, movatomBgColor.g, movatomBgColor.b).toUpperCase();
+    }
+
+    function movatomRemoveBackground(imageData, color, tolerance, mode) {
+      const width = imageData.width;
+      const height = imageData.height;
+      const data = new Uint8ClampedArray(imageData.data);
+
+      function tryRemovePixel(x, y) {
+        if (x < 0 || x >= width || y < 0 || y >= height) return false;
+        const idx = y * width + x;
+        const i = idx * 4;
+        if (!matchesColor(data[i], data[i + 1], data[i + 2], data[i + 3], color, tolerance)) {
+          return false;
+        }
+        data[i + 3] = 0;
+        return true;
+      }
+
+      if (mode === "edges") {
+        const queue = [];
+        for (let x = 0; x < width; x++) {
+          if (tryRemovePixel(x, 0)) queue.push([x, 0]);
+          if (tryRemovePixel(x, height - 1)) queue.push([x, height - 1]);
+        }
+        for (let y = 0; y < height; y++) {
+          if (tryRemovePixel(0, y)) queue.push([0, y]);
+          if (tryRemovePixel(width - 1, y)) queue.push([width - 1, y]);
+        }
+        while (queue.length) {
+          const [x, y] = queue.pop();
+          [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]].forEach(([nx, ny]) => {
+            if (tryRemovePixel(nx, ny)) queue.push([nx, ny]);
+          });
+        }
+      } else {
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const i = (y * width + x) * 4;
+            if (matchesColor(data[i], data[i + 1], data[i + 2], data[i + 3], color, tolerance)) {
+              data[i + 3] = 0;
+            }
+          }
+        }
+      }
+      return new ImageData(data, width, height);
+    }
+
+    function movatomApplyBackground(imageData, bg) {
+      const out = cloneImageData(imageData);
+      const data = out.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const a = data[i + 3] / 255;
+        if (a >= 0.999) continue;
+        const inv = 1 - a;
+        data[i] = Math.round(data[i] * a + bg.r * inv);
+        data[i + 1] = Math.round(data[i + 1] * a + bg.g * inv);
+        data[i + 2] = Math.round(data[i + 2] * a + bg.b * inv);
+        data[i + 3] = 255;
+      }
+      return out;
+    }
+
+    function movatomProcessFrame(rawFrame) {
+      if (!movatomBgColor || !rawFrame) return rawFrame;
+      const tolerance = Number(movatomTolerance.value);
+      const mode = movatomRemoveMode.value;
+      const removed = movatomRemoveBackground(rawFrame, movatomBgColor, tolerance, mode);
+      return movatomApplyBackground(removed, movatomGetNewBgColor());
+    }
+
+    function movatomFormatTime(seconds) {
+      const s = Math.max(0, seconds || 0);
+      const m = Math.floor(s / 60);
+      const r = Math.floor(s % 60);
+      return `${m}:${String(r).padStart(2, "0")}`;
+    }
+
+    function movatomPaintFrame() {
+      if (!movatomRawFrames.length) {
+        movatomFrameCanvas.classList.add("hidden");
+        movatomFrameHint.style.display = "flex";
+        movatomFrameWrap.classList.add("is-idle");
+        return;
+      }
+      const raw = movatomRawFrames[movatomFrameIndex];
+      const processed = movatomProcessedFrames[movatomFrameIndex]
+        || movatomProcessFrame(raw);
+      movatomProcessedFrames[movatomFrameIndex] = processed;
+      const view = movatomCompareView === "after" && movatomBgColor ? processed : raw;
+      movatomFrameCanvas.width = view.width;
+      movatomFrameCanvas.height = view.height;
+      movatomFrameCtx.putImageData(view, 0, 0);
+      movatomFrameCanvas.classList.remove("hidden");
+      movatomFrameHint.style.display = "none";
+      movatomFrameWrap.classList.remove("is-idle");
+      movatomFrameLabel.textContent = `Frame ${movatomFrameIndex + 1} / ${movatomRawFrames.length}`;
+      movatomTimeLabel.textContent = movatomFormatTime(movatomFrameIndex / movatomFps);
+      movatomFrameSlider.value = String(movatomFrameIndex);
+    }
+
+    function movatomInvalidateProcessed() {
+      movatomProcessedFrames = [];
+    }
+
+    function movatomSetCompareView(view) {
+      movatomCompareView = view;
+      movatomShowAfterBtn.classList.toggle("active", view === "after");
+      movatomShowBeforeBtn.classList.toggle("active", view === "before");
+      movatomPaintFrame();
+    }
+
+    function movatomUpdateControls() {
+      const hasVideo = movatomRawFrames.length > 0;
+      movatomBgPickerBtn.disabled = !hasVideo;
+      movatomExportBtn.disabled = !(hasVideo && movatomBgColor);
+      movatomFrameSlider.disabled = !hasVideo;
+      movatomFrameSlider.max = String(Math.max(0, movatomRawFrames.length - 1));
+      movatomShowBeforeBtn.disabled = !hasVideo;
+      movatomShowAfterBtn.disabled = !hasVideo || !movatomBgColor;
+    }
+
+    async function movatomSeekVideo(time) {
+      return new Promise((resolve) => {
+        const onSeeked = () => {
+          movatomVideo.removeEventListener("seeked", onSeeked);
+          resolve();
+        };
+        movatomVideo.addEventListener("seeked", onSeeked);
+        movatomVideo.currentTime = time;
+      });
+    }
+
+    async function movatomExtractFrames(video) {
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0) {
+        throw new Error("Vídeo inválido.");
+      }
+      movatomFps = 24;
+      let frameCount = Math.ceil(duration * movatomFps);
+      if (frameCount > MOVATOM_MAX_FRAMES) {
+        movatomFps = MOVATOM_MAX_FRAMES / duration;
+        frameCount = MOVATOM_MAX_FRAMES;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const frames = [];
+      for (let i = 0; i < frameCount; i += 1) {
+        await movatomSeekVideo(Math.min(i / movatomFps, duration - 0.001));
+        ctx.drawImage(video, 0, 0);
+        frames.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      }
+      return frames;
+    }
+
+    async function movatomLoadVideo(file) {
+      movatomVideoFile = file;
+      movatomVideoName.textContent = file.name;
+      setMovAtomStatus("Extraindo frames…");
+      const url = URL.createObjectURL(file);
+      try {
+        movatomVideo.src = url;
+        await new Promise((resolve, reject) => {
+          movatomVideo.onloadedmetadata = resolve;
+          movatomVideo.onerror = reject;
+        });
+        movatomRawFrames = await movatomExtractFrames(movatomVideo);
+        movatomFrameIndex = 0;
+        movatomBgColor = null;
+        movatomInvalidateProcessed();
+        updateMovAtomBgUI();
+        movatomPaintFrame();
+        movatomUpdateControls();
+        setMovAtomStatus(`${movatomRawFrames.length} frames · ${movatomFps.toFixed(1)} fps`, "ok");
+      } catch {
+        movatomRawFrames = [];
+        setMovAtomStatus("Erro ao extrair frames.", "error");
+      } finally {
+        URL.revokeObjectURL(url);
+        movatomVideo.removeAttribute("src");
+        movatomVideo.load();
+        movatomUpdateControls();
+      }
+    }
+
+    function movatomPickBgFromFrame(event) {
+      if (!movatomRawFrames.length) return;
+      const raw = movatomRawFrames[movatomFrameIndex];
+      const rect = movatomFrameCanvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const x = Math.floor(((event.clientX - rect.left) / rect.width) * movatomFrameCanvas.width);
+      const y = Math.floor(((event.clientY - rect.top) / rect.height) * movatomFrameCanvas.height);
+      if (x < 0 || y < 0 || x >= raw.width || y >= raw.height) return;
+      const idx = (y * raw.width + x) * 4;
+      const d = raw.data;
+      movatomBgColor = { r: d[idx], g: d[idx + 1], b: d[idx + 2], a: d[idx + 3] };
+      movatomInvalidateProcessed();
+      updateMovAtomBgUI();
+      movatomPaintFrame();
+      movatomUpdateControls();
+    }
+
+    async function movatomGetFfmpeg() {
+      if (movatomFfmpeg) return movatomFfmpeg;
+      const { FFmpeg } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/+esm");
+      const { toBlobURL } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/+esm");
+      const ffmpeg = new FFmpeg();
+      ffmpeg.on("progress", ({ progress }) => {
+        if (progress > 0 && progress < 1) {
+          setMovAtomStatus(`Gerando MP4… ${Math.round(progress * 100)}%`);
+        }
+      });
+      const coreBase = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm";
+      const classWorkerURL = new URL("ffmpeg/worker.js", document.baseURI).href;
+      try {
+        await ffmpeg.load({
+          classWorkerURL,
+          coreURL: await toBlobURL(`${coreBase}/ffmpeg-core.js`, "text/javascript"),
+          wasmURL: await toBlobURL(`${coreBase}/ffmpeg-core.wasm`, "application/wasm"),
+        });
+      } catch (err) {
+        const hint = location.protocol === "file:"
+          ? " Abra o app por um servidor local (ex.: Live Server) se o erro persistir."
+          : "";
+        throw new Error((err?.message || "Falha ao carregar FFmpeg.") + hint);
+      }
+      movatomFfmpeg = ffmpeg;
+      return ffmpeg;
+    }
+
+    async function movatomFrameToPngBytes(imageData) {
+      const off = document.createElement("canvas");
+      off.width = imageData.width;
+      off.height = imageData.height;
+      off.getContext("2d").putImageData(imageData, 0, 0);
+      const blob = await new Promise((resolve) => off.toBlob(resolve, "image/png"));
+      return new Uint8Array(await blob.arrayBuffer());
+    }
+
+    async function movatomBuildMp4(processedFrames, fps) {
+      const ffmpeg = await movatomGetFfmpeg();
+      for (let i = 0; i < processedFrames.length; i += 1) {
+        const name = `frame${String(i).padStart(5, "0")}.png`;
+        await ffmpeg.writeFile(name, await movatomFrameToPngBytes(processedFrames[i]));
+      }
+      await ffmpeg.exec([
+        "-framerate", String(fps),
+        "-i", "frame%05d.png",
+        "-c:v", "libx264",
+        "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart",
+        "output.mp4",
+      ]);
+      const data = await ffmpeg.readFile("output.mp4");
+      for (let i = 0; i < processedFrames.length; i += 1) {
+        try {
+          await ffmpeg.deleteFile(`frame${String(i).padStart(5, "0")}.png`);
+        } catch { /* ignore */ }
+      }
+      try { await ffmpeg.deleteFile("output.mp4"); } catch { /* ignore */ }
+      return new Blob([data.buffer], { type: "video/mp4" });
+    }
+
+    async function movatomExportVideo() {
+      if (!movatomRawFrames.length || !movatomBgColor) return;
+
+      let outputDir = null;
+      try {
+        if (window.showDirectoryPicker) {
+          outputDir = await window.showDirectoryPicker({ mode: "readwrite" });
+        }
+      } catch {
+        setMovAtomStatus("Salvamento cancelado.", "");
+        return;
+      }
+
+      movatomExportBtn.disabled = true;
+      try {
+        setMovAtomStatus("Processando frames…");
+        const processed = movatomRawFrames.map((frame) => movatomProcessFrame(frame));
+        setMovAtomStatus("Gerando MP4…");
+        const blob = await movatomBuildMp4(processed, movatomFps);
+        const baseName = (movatomVideoFile?.name || "video").replace(/\.[^.]+$/i, "");
+        const outName = `${baseName}.mp4`;
+        if (outputDir) {
+          const handle = await outputDir.getFileHandle(outName, { create: true });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          setMovAtomStatus(`Salvo: ${outName}`, "ok");
+        } else {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = outName;
+          link.click();
+          URL.revokeObjectURL(url);
+          setMovAtomStatus(`Baixado: ${outName}`, "ok");
+        }
+      } catch (err) {
+        movatomFfmpeg = null;
+        setMovAtomStatus(err?.message || "Erro ao exportar MP4.", "error");
+      } finally {
+        movatomUpdateControls();
+      }
+    }
+
+    movatomVideoInput.addEventListener("change", async () => {
+      const file = movatomVideoInput.files?.[0];
+      if (!file) return;
+      await movatomLoadVideo(file);
+      movatomVideoInput.value = "";
+    });
+
+    movatomFrameWrap.addEventListener("click", movatomPickBgFromFrame);
+    movatomBgPickerBtn.addEventListener("click", () => movatomSetCompareView("before"));
+
+    movatomTolerance.addEventListener("input", () => {
+      movatomToleranceValue.textContent = movatomTolerance.value;
+      movatomInvalidateProcessed();
+      movatomPaintFrame();
+    });
+
+    movatomRemoveMode.addEventListener("change", () => {
+      movatomInvalidateProcessed();
+      movatomPaintFrame();
+    });
+
+    movatomNewBgInput.addEventListener("input", () => {
+      movatomInvalidateProcessed();
+      movatomPaintFrame();
+    });
+
+    movatomFrameSlider.addEventListener("input", () => {
+      movatomFrameIndex = Number(movatomFrameSlider.value);
+      movatomPaintFrame();
+    });
+
+    movatomShowAfterBtn.addEventListener("click", () => movatomSetCompareView("after"));
+    movatomShowBeforeBtn.addEventListener("click", () => movatomSetCompareView("before"));
+    movatomExportBtn.addEventListener("click", movatomExportVideo);
+
+    updateMovAtomBgUI();
+    movatomUpdateControls();
+
+    const TUTORIAL_STORAGE_KEY = "picatom-tutorial-v5";
     const tutorialOverlay = document.getElementById("tutorialOverlay");
     const tutorialSpotlight = document.getElementById("tutorialSpotlight");
     const tutorialSectionBadge = document.getElementById("tutorialSectionBadge");
@@ -8067,15 +9939,15 @@
       {
         section: "intro",
         mode: "picatom",
-        title: "Bem-vindo ao PicAtom, DesAtom e RedAtom",
-        body: `<p>Este tutorial cobre os três modos: <strong>PicAtom</strong> (remover fundo), <strong>DesAtom</strong> (retoque de borda) e <strong>RedAtom</strong> (redimensionar e exportar).</p><p>A mesma imagem e o preview central são compartilhados entre todos os modos.</p>`,
+        title: "Bem-vindo ao PicAtom, DesAtom, RedAtom e TonAtom",
+        body: `<p>Este tutorial cobre os quatro modos: <strong>PicAtom</strong> (remover fundo), <strong>DesAtom</strong> (retoque de borda), <strong>RedAtom</strong> (redimensionar e exportar) e <strong>TonAtom</strong> (ajustar tons em lote).</p><p>PicAtom, DesAtom e RedAtom compartilham o preview central. O TonAtom tem fluxo próprio para processar pastas de imagens.</p>`,
       },
       {
         section: "picatom",
         mode: "picatom",
         target: "#headerModes",
         title: "Alternar entre os modos",
-        body: `<p>Use <strong>PicAtom</strong>, <strong>DesAtom</strong> e <strong>RedAtom</strong> no topo. O preview permanece o mesmo; mudam os controles laterais e a barra superior do preview.</p>`,
+        body: `<p>Use <strong>PicAtom</strong>, <strong>DesAtom</strong>, <strong>RedAtom</strong> e <strong>TonAtom</strong> no topo. PicAtom, DesAtom e RedAtom compartilham o preview central; o TonAtom abre um painel dedicado para lote de cores.</p>`,
       },
       {
         section: "picatom",
@@ -8307,10 +10179,36 @@
         body: `<p>Redimensionamentos ficam registrados junto com edições do PicAtom, DesAtom e RedAtom. Clique com o botão direito para voltar ou remover etapas.</p>`,
       },
       {
+        section: "tonatom",
+        mode: "tonatom",
+        title: "TonAtom",
+        body: `<p><strong>Origem</strong> = cor na referência. <strong>Alvo</strong> = cor no lote a trocar. Ajuste estilo Ctrl+U.</p>`,
+      },
+      {
+        section: "tonatom",
+        mode: "tonatom",
+        target: "#tonatomProcessBtn",
+        title: "Salvar lote",
+        body: `<p>Ao clicar em <strong>Salvar lote</strong>, o Windows pede a pasta de destino e processa todas as imagens.</p>`,
+      },
+      {
+        section: "movatom",
+        mode: "movatom",
+        title: "MovAtom",
+        body: `<p>Vídeo → frames → remove fundo → troca cor de fundo → exporta <strong>MP4</strong>. Clique no frame para escolher a cor do fundo.</p>`,
+      },
+      {
+        section: "movatom",
+        mode: "movatom",
+        target: "#movatomExportBtn",
+        title: "Salvar MP4",
+        body: `<p><strong>Salvar MP4</strong> abre a pasta no Windows, processa todos os frames e gera o vídeo.</p>`,
+      },
+      {
         section: "done",
         mode: "picatom",
         title: "Tutorial concluído",
-        body: `<p>Fluxo completo: <strong>PicAtom</strong> remove fundo, <strong>DesAtom</strong> limpa bordas e <strong>RedAtom</strong> redimensiona e exporta.</p><p>Clique em <strong>Concluir</strong> para começar. Se precisar rever, use o botão <strong>Tutorial</strong> no topo.</p>`,
+        body: `<p><strong>PicAtom</strong>, <strong>DesAtom</strong>, <strong>RedAtom</strong>, <strong>TonAtom</strong> e <strong>MovAtom</strong> — clique em <strong>Concluir</strong> para começar.</p>`,
       },
     ];
 
@@ -8384,17 +10282,25 @@
           const isDone = step.section === "done";
           const isDesatom = step.section === "desatom";
           const isRedatom = step.section === "redatom";
+          const isTonatom = step.section === "tonatom";
+          const isMovatom = step.section === "movatom";
           tutorialSectionBadge.textContent = isIntro
-            ? "PicAtom · DesAtom · RedAtom"
+            ? "PicAtom · DesAtom · RedAtom · TonAtom · MovAtom"
             : isDone
               ? "Concluído"
               : isDesatom
                 ? "DesAtom"
                 : isRedatom
                   ? "RedAtom"
-                  : "PicAtom";
+                  : isTonatom
+                    ? "TonAtom"
+                    : isMovatom
+                      ? "MovAtom"
+                      : "PicAtom";
           tutorialSectionBadge.classList.toggle("desatom", isDesatom);
           tutorialSectionBadge.classList.toggle("redatom", isRedatom);
+          tutorialSectionBadge.classList.toggle("tonatom", isTonatom);
+          tutorialSectionBadge.classList.toggle("movatom", isMovatom);
           tutorialSectionBadge.classList.toggle("intro-all", isIntro);
 
           tutorialTitle.textContent = step.title;
